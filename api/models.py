@@ -26,7 +26,7 @@ class Hunter(AbstractUser):
     @property
     def power_level(self):
         base_power = {'E': 10, 'D': 30, 'C': 50, 'B': 80, 'A': 120, 'S': 200}
-        raid_bonus = sum(participation.damage_dealt for participation in self.raidparticipation_set.all()) // 100
+        raid_bonus = sum(participation.damage_dealt for participation in self.participations.all()) // 100
         return base_power[self.rank] + sum(skill.power for skill in self.skills.all()) + raid_bonus
 
     def __str__(self):
@@ -76,7 +76,7 @@ class Dungeon(models.Model):
 
 
 class Raid(models.Model):
-    raid_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    raid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='raids')
     date = models.DateField()

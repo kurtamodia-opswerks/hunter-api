@@ -7,7 +7,12 @@ from .serializers import (
     SkillSerializer,
     DungeonSerializer,
     RaidSerializer,
-    RaidParticipationSerializer
+    RaidParticipationSerializer,
+    HunterCreateSerializer,
+    GuildCreateSerializer,
+    DungeonCreateSerializer,
+    RaidCreateSerializer,
+    RaidParticipationCreateSerializer
 )
 
 class SkillViewSet(viewsets.ModelViewSet):
@@ -25,6 +30,11 @@ class HunterViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return HunterCreateSerializer
+        return super().get_serializer_class()
+
 
 class GuildViewSet(viewsets.ModelViewSet):
     queryset = Guild.objects.select_related('leader') \
@@ -38,6 +48,11 @@ class GuildViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return GuildCreateSerializer
+        return super().get_serializer_class()
+
 
 class DungeonViewSet(viewsets.ModelViewSet):
     queryset = Dungeon.objects.prefetch_related(
@@ -47,12 +62,22 @@ class DungeonViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return DungeonCreateSerializer
+        return super().get_serializer_class()
+
 
 class RaidParticipationViewSet(viewsets.ModelViewSet):
     queryset = RaidParticipation.objects.select_related('raid', 'hunter').all()
     serializer_class = RaidParticipationSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RaidParticipationCreateSerializer
+        return super().get_serializer_class()
 
 
 class RaidViewSet(viewsets.ModelViewSet):
@@ -65,3 +90,8 @@ class RaidViewSet(viewsets.ModelViewSet):
     serializer_class = RaidSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RaidCreateSerializer
+        return super().get_serializer_class()
