@@ -46,8 +46,12 @@ class Command(BaseCommand):
         ranks = ['S', 'A', 'B', 'C']
         hunters = []
         for _ in range(15):
+            full_name = fake.name()
+            first_name, last_name = full_name.split(" ", 1)
             hunter = Hunter.objects.create_user(
                 username=fake.user_name(),
+                first_name=first_name,
+                last_name=last_name,
                 email=fake.email(),
                 password="password123",
                 rank=random.choice(ranks),

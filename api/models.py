@@ -13,9 +13,7 @@ class Hunter(AbstractUser):
         A = 'A', 'A-Rank'
         S = 'S', 'S-Rank'
 
-    # Override `date_joined` to be a DateField instead of DateTime
     date_joined = models.DateField(auto_now_add=True)
-
     rank = models.CharField(max_length=1, choices=RankChoices.choices)
     guild = models.ForeignKey('Guild', on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
     skills = models.ManyToManyField('Skill', related_name='hunters', blank=True)
@@ -32,7 +30,9 @@ class Hunter(AbstractUser):
         return base_power[self.rank] + sum(skill.power for skill in self.skills.all()) + raid_bonus
 
     def __str__(self):
-        return f"{self.username} ({self.get_rank_display()})"
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return f"{full_name} ({self.get_rank_display()})"
+
     
 class Guild(models.Model):
     name = models.CharField(max_length=100)
@@ -97,12 +97,14 @@ class RaidParticipation(models.Model):
         Healer = 'Healer'
         Support = 'Support'
 
-    raid = models.ForeignKey(Raid, on_delete=models.CASCADE)
-    hunter = models.ForeignKey(Hunter, on_delete=models.CASCADE, related_name='raid_participations')
+    raid = models.ForeignKey(Raid, on_delete=models.CASCADE, related_name='participations')
+    hunter = models.ForeignKey(Hunter, on_delete=models.CASCADE, related_name='participations')
     role = models.CharField(max_length=10, choices=RoleChoices.choices)
     damage_dealt = models.PositiveIntegerField(default=0)
     healing_done = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.hunter.username} in {self.raid.name} as {self.role}"
+        full_name = f"{self.hunter.first_name} {self.hunter.last_name}".strip()
+        return f"{full_name} in {self.raid.name} as {self.role}"
+
 
