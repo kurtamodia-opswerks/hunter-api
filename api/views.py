@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import viewsets, permissions
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from .models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
@@ -21,6 +23,15 @@ class SkillViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
+    @method_decorator(cache_page(60 * 15, key_prefix='skill_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
+
 
 class HunterViewSet(viewsets.ModelViewSet):
     queryset = Hunter.objects.select_related('guild') \
@@ -29,6 +40,15 @@ class HunterViewSet(viewsets.ModelViewSet):
     serializer_class = HunterSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+
+    @method_decorator(cache_page(60 * 15, key_prefix='hunter_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
 
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PUT':
@@ -48,6 +68,15 @@ class GuildViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
+    @method_decorator(cache_page(60 * 15, key_prefix='guild_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
+
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PUT':
             return GuildCreateSerializer
@@ -62,6 +91,15 @@ class DungeonViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
+    @method_decorator(cache_page(60 * 15, key_prefix='dungeon_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
+
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PUT':
             return DungeonCreateSerializer
@@ -73,6 +111,15 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
     serializer_class = RaidParticipationSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+
+    @method_decorator(cache_page(60 * 15, key_prefix='participation_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
 
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PUT':
@@ -90,6 +137,15 @@ class RaidViewSet(viewsets.ModelViewSet):
     serializer_class = RaidSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+
+    @method_decorator(cache_page(60 * 15, key_prefix='raid_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        import time
+        time.sleep(2)
+        return super().get_queryset()
 
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PUT':
