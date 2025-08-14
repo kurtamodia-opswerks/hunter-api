@@ -188,17 +188,43 @@ class DungeonCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"location": "Dungeon location is required."})
         return data
 
+class RaidParticipationNestedSerializer(serializers.ModelSerializer):
+    hunter_id = serializers.IntegerField()
+    
+    class Meta:
+        model = RaidParticipation
+        fields = ['hunter_id', 'role']
+
+    def validate_hunter_id(self, value):
+        if not Hunter.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("Hunter does not exist.")
+        return value
+
+    def validate_role(self, value):
+        valid_roles = [r[0] for r in RaidParticipation.RoleChoices.choices]
+        if value not in valid_roles:
+            raise serializers.ValidationError(f"Role must be one of {valid_roles}.")
+        return value
+
+
 class RaidCreateSerializer(serializers.ModelSerializer):
     dungeon = serializers.PrimaryKeyRelatedField(queryset=Dungeon.objects.filter(is_open=True))
+    participations = RaidParticipationNestedSerializer(many=True, required=True)
 
     class Meta:
         model = Raid
-        fields = ['name', 'dungeon', 'date', 'success']
+        fields = ['name', 'dungeon', 'date', 'success', 'participations']
 
-    def validate(self, data):
-        if not data.get('name', '').strip():
-            raise serializers.ValidationError({"name": "Raid name is required."})
-        return data
+    def create(self, validated_data):
+        participations_data = validated_data.pop('participations')
+        raid = Raid.objects.create(**validated_data)
+        
+        # Create participations
+        for part_data in participations_data:
+            hunter = Hunter.objects.get(pk=part_data.pop('hunter_id'))
+            RaidParticipation.objects.create(raid=raid, hunter=hunter, **part_data)
+        
+        return raid
 
 class RaidParticipationCreateSerializer(serializers.ModelSerializer):
     raid_id = serializers.UUIDField(write_only=True)

@@ -19,6 +19,11 @@ from .serializers import (
     RaidParticipationCreateSerializer
 )
 from .filters import HunterFilter, GuildFilter, SkillFilter, RaidFilter, RaidParticipationFilter, ActiveDungeonFilterBackend
+from .tasks import (
+    send_hunter_welcome_email,
+    send_guild_invite_email,
+    send_raid_notification_email
+)
 
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
@@ -61,6 +66,10 @@ class HunterViewSet(viewsets.ModelViewSet):
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+    
+    def perform_create(self, serializer):
+        hunter = serializer.save()
+        send_hunter_welcome_email.delay(hunter.id)
     
     def get_queryset(self):
         import time
@@ -190,6 +199,10 @@ class RaidViewSet(viewsets.ModelViewSet):
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+    
+    def perform_create(self, serializer):
+        raid = serializer.save()
+        send_raid_notification_email.delay(raid.raid_id)
     
     def get_queryset(self):
         import time
