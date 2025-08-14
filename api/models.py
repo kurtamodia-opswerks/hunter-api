@@ -87,7 +87,7 @@ class Raid(models.Model):
         return sum(hunter.power_level for hunter in self.team.all())
 
     def __str__(self):
-        return f"{self.raid_id} - {self.dungeon.name}"
+        return f"{self.name} - {self.dungeon.name}"
 
 
 class RaidParticipation(models.Model):
