@@ -31,7 +31,7 @@ class HunterViewSet(viewsets.ModelViewSet):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PUT':
             return HunterCreateSerializer
         return super().get_serializer_class()
 
@@ -49,7 +49,7 @@ class GuildViewSet(viewsets.ModelViewSet):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PUT':
             return GuildCreateSerializer
         return super().get_serializer_class()
 
@@ -63,7 +63,7 @@ class DungeonViewSet(viewsets.ModelViewSet):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PUT':
             return DungeonCreateSerializer
         return super().get_serializer_class()
 
@@ -75,7 +75,7 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PUT':
             return RaidParticipationCreateSerializer
         return super().get_serializer_class()
 
@@ -92,6 +92,6 @@ class RaidViewSet(viewsets.ModelViewSet):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PUT':
             return RaidCreateSerializer
         return super().get_serializer_class()
