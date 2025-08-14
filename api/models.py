@@ -21,6 +21,10 @@ class Hunter(AbstractUser):
     skills = models.ManyToManyField('Skill', related_name='hunters', blank=True)
     completed_raids = models.ManyToManyField('Raid', through='RaidParticipation', related_name='completed_by')
 
+    class Meta:
+        verbose_name = "Hunter"
+        verbose_name_plural = "Hunters"
+
     @property
     def power_level(self):
         base_power = {'E': 10, 'D': 30, 'C': 50, 'B': 80, 'A': 120, 'S': 200}
