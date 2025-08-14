@@ -72,6 +72,7 @@ class Dungeon(models.Model):
 
 
 class Raid(models.Model):
+    raid_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=100)
     dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='raids')
     date = models.DateField()
@@ -82,7 +83,7 @@ class Raid(models.Model):
         return sum(hunter.power_level for hunter in self.team.all())
 
     def __str__(self):
-        return f"{self.name} - {self.dungeon.name}"
+        return f"{self.raid_id} - {self.dungeon.name}"
 
 
 class RaidParticipation(models.Model):
