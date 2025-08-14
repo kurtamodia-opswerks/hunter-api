@@ -21,12 +21,13 @@ class HunterSerializer(serializers.ModelSerializer):
     guild = serializers.StringRelatedField()
     power_level = serializers.SerializerMethodField()
     rank_display = serializers.CharField(source='get_rank_display', read_only=True)
+    email = serializers.EmailField(read_only=True)
     full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Hunter
         fields = [
-            'id', 'date_joined', 'full_name', 'rank_display', 'guild',
+            'id', 'date_joined', 'full_name', 'rank_display', 'email', 'guild',
             'skills', 'power_level'
         ]
 
@@ -45,7 +46,7 @@ class GuildMemberSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'rank_display']
 
     def get_full_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}".strip() or obj.username
+        return f"{obj.first_name} {obj.last_name}".strip()
 
 class GuildSerializer(serializers.ModelSerializer):
     leader = GuildMemberSerializer(read_only=True)
@@ -130,6 +131,9 @@ class HunterCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hunter
         fields = ['first_name', 'last_name', 'username', 'password', 'email', 'rank', 'skills', 'guild']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def validate(self, data):
         if self.instance is None:
@@ -140,6 +144,23 @@ class HunterCreateSerializer(serializers.ModelSerializer):
             if data.get('rank') not in [r[0] for r in Hunter.RankChoices.choices]:
                 raise serializers.ValidationError({"rank": "Valid rank is required."})
         return data
+    
+    def create(self, validated_data):
+            skills = validated_data.pop('skills', [])
+            guild = validated_data.pop('guild', None)
+
+            user = Hunter(**validated_data)
+
+            user.set_password(validated_data['password'])
+            user.save()
+
+            if skills:
+                user.skills.set(skills)
+            if guild:
+                user.guild = guild
+                user.save()
+
+            return user
     
 class GuildCreateSerializer(serializers.ModelSerializer):
     leader = serializers.PrimaryKeyRelatedField(queryset=Hunter.objects.all())

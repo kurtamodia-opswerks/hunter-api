@@ -20,7 +20,6 @@ from .serializers import (
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
-    permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     @method_decorator(cache_page(60 * 15, key_prefix='skill_list'))
@@ -31,6 +30,12 @@ class SkillViewSet(viewsets.ModelViewSet):
         import time
         time.sleep(2)
         return super().get_queryset()
+    
+    def get_permissions(self):  
+        self.permission_classes = [permissions.AllowAny]
+        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+            self.permission_classes = [permissions.IsAuthenticated]
+        return super().get_permissions()
 
 
 class HunterViewSet(viewsets.ModelViewSet):
@@ -38,7 +43,6 @@ class HunterViewSet(viewsets.ModelViewSet):
         .prefetch_related('skills', 'completed_raids', 'participations', 'participations__raid') \
         .all()
     serializer_class = HunterSerializer
-    permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     @method_decorator(cache_page(60 * 15, key_prefix='hunter_list'))
@@ -54,6 +58,12 @@ class HunterViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST' or self.request.method == 'PUT':
             return HunterCreateSerializer
         return super().get_serializer_class()
+    
+    def get_permissions(self):  
+        self.permission_classes = [permissions.AllowAny]
+        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+            self.permission_classes = [permissions.IsAdminUser]
+        return super().get_permissions()
 
 
 class GuildViewSet(viewsets.ModelViewSet):
@@ -65,7 +75,6 @@ class GuildViewSet(viewsets.ModelViewSet):
             'members__participations__raid'
         ).all()
     serializer_class = GuildSerializer
-    permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     @method_decorator(cache_page(60 * 15, key_prefix='guild_list'))
@@ -81,6 +90,12 @@ class GuildViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST' or self.request.method == 'PUT':
             return GuildCreateSerializer
         return super().get_serializer_class()
+    
+    def get_permissions(self):  
+        self.permission_classes = [permissions.AllowAny]
+        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+            self.permission_classes = [permissions.IsAdminUser]
+        return super().get_permissions()
 
 
 class DungeonViewSet(viewsets.ModelViewSet):
@@ -105,11 +120,9 @@ class DungeonViewSet(viewsets.ModelViewSet):
             return DungeonCreateSerializer
         return super().get_serializer_class()
 
-
 class RaidParticipationViewSet(viewsets.ModelViewSet):
     queryset = RaidParticipation.objects.select_related('raid', 'hunter').all()
     serializer_class = RaidParticipationSerializer
-    permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     @method_decorator(cache_page(60 * 15, key_prefix='participation_list'))
@@ -125,6 +138,12 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST' or self.request.method == 'PUT':
             return RaidParticipationCreateSerializer
         return super().get_serializer_class()
+    
+    def get_permissions(self):  
+        self.permission_classes = [permissions.AllowAny]
+        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+            self.permission_classes = [permissions.IsAuthenticated]
+        return super().get_permissions()
 
 
 class RaidViewSet(viewsets.ModelViewSet):
@@ -135,7 +154,6 @@ class RaidViewSet(viewsets.ModelViewSet):
             'participations__hunter__skills'
         ).all()
     serializer_class = RaidSerializer
-    permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
 
     @method_decorator(cache_page(60 * 15, key_prefix='raid_list'))
@@ -151,3 +169,9 @@ class RaidViewSet(viewsets.ModelViewSet):
         if self.request.method == 'POST' or self.request.method == 'PUT':
             return RaidCreateSerializer
         return super().get_serializer_class()
+    
+    def get_permissions(self):  
+        self.permission_classes = [permissions.AllowAny]
+        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+            self.permission_classes = [permissions.IsAuthenticated]
+        return super().get_permissions()
