@@ -51,3 +51,15 @@ def send_guild_creation_email(guild_id):
         return f"Guild creation email sent to {guild.leader.email}"
     except Guild.DoesNotExist:
         return f"Guild with id {guild_id} does not exist."
+    
+@shared_task
+def send_raid_participation_invite_email(raid_id, hunter_id):
+    try:
+        raid = Raid.objects.get(pk=raid_id)
+        hunter = Hunter.objects.get(pk=hunter_id)
+        subject = f'You are invited to join the raid {raid.name}'
+        message = f'Hi {hunter.first_name},\n\nYou have been invited to join the raid "{raid.name}".'
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [hunter.email])
+        return f"Raid invite sent to {hunter.email}"
+    except (Raid.DoesNotExist, Hunter.DoesNotExist):
+        return f"Raid or Hunter does not exist."

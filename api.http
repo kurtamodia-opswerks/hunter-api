@@ -241,3 +241,14 @@ Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
 ###
 DELETE http://localhost:8000/api/raid-participations/1/ HTTP/1.1
 Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+### ===== RAID INVITE =====
+POST http://localhost:8000/api/raid-invite/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "raid_id": 1,
+    "hunter_id": 2
+}
+

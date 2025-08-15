@@ -2,10 +2,7 @@ import logging
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, filters, status
-from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, permissions, filters
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
@@ -20,13 +17,11 @@ from ..serializers import (
     GuildCreateSerializer,
     DungeonCreateSerializer,
     RaidCreateSerializer,
-    RaidParticipationCreateSerializer,
-    GuildInviteSerializer
+    RaidParticipationCreateSerializer
 )
 from ..filters import HunterFilter, GuildFilter, SkillFilter, RaidFilter, RaidParticipationFilter, ActiveDungeonFilterBackend
 from ..tasks import (
     send_hunter_welcome_email,
-    send_guild_invite_email,
     send_raid_notification_email,
     send_guild_creation_email
 )

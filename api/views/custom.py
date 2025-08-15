@@ -3,12 +3,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 
-from ..models import Guild
+from ..models import Guild, Raid
 from ..serializers import (
-    GuildInviteSerializer
+    GuildInviteSerializer,
+    RaidInviteSerializer
 )
 from ..tasks import (
     send_guild_invite_email,
+    send_raid_participation_invite_email
 )
 
 logger = logging.getLogger('api')
@@ -40,3 +42,41 @@ class GuildInviteView(APIView):
             {"message": "Guild invite email is being sent.", "task_id": task.id},
             status=status.HTTP_202_ACCEPTED
         )
+    
+class RaidInviteView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def post(self, request, *args, **kwargs):
+        serializer = RaidInviteSerializer(data=request.data)
+        if not serializer.is_valid():
+            logger.warning(f"Raid invite validation failed: {serializer.errors}")
+            serializer.is_valid(raise_exception=True)
+
+        hunter_id = serializer.validated_data['hunter_id']
+        raid_id = serializer.validated_data['raid_id']
+
+        try:
+            raid = Raid.objects.get(pk=raid_id)
+        except Raid.DoesNotExist:
+            return Response(
+                {"error": f"Raid with id {raid_id} does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Just log the invite
+        logger.info(
+            f"Raid invite sent: Hunter ID {hunter_id} to Raid '{raid.name}' "
+            f"(ID: {raid_id}) by {request.user}"
+        )
+
+        # Trigger Celery task
+        task = send_raid_participation_invite_email.delay(raid_id, hunter_id)
+
+        return Response(
+            {
+                "message": "Raid invite email is being sent.",
+                "task_id": task.id
+            },
+            status=status.HTTP_202_ACCEPTED
+        )
+
