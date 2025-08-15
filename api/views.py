@@ -1,3 +1,4 @@
+import logging
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
@@ -29,6 +30,8 @@ from .tasks import (
     send_raid_notification_email
 )
 
+logger = logging.getLogger('api')
+
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
@@ -41,18 +44,27 @@ class SkillViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60 * 15, key_prefix='skill_list'))
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
+        logger.info("Fetching skill list")
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
         import time
+        logger.debug("Delaying skill queryset for simulation")
         time.sleep(2)
-        return super().get_queryset()
+        qs = super().get_queryset()
+        logger.debug(f"Skill queryset count: {qs.count()}")
+        return qs
     
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]
         if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
             self.permission_classes = [permissions.IsAuthenticated]
+        logger.debug(f"SkillViewSet permissions: {self.permission_classes}")
         return super().get_permissions()
+    
+    def perform_create(self, serializer):
+        skill = serializer.save()
+        logger.info(f"Skill created: {skill.name} (Power: {skill.power})")
 
 
 class HunterViewSet(viewsets.ModelViewSet):
@@ -69,26 +81,33 @@ class HunterViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60 * 15, key_prefix='hunter_list'))
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
+        logger.info("Fetching hunter list")
         return super().list(request, *args, **kwargs)
     
     def perform_create(self, serializer):
         hunter = serializer.save()
+        logger.info(f"Hunter created: {hunter.username} (ID: {hunter.id}) — Sending welcome email")
         send_hunter_welcome_email.delay(hunter.id)
     
     def get_queryset(self):
         import time
+        logger.debug("Delaying hunter queryset for simulation")
         time.sleep(2)
-        return super().get_queryset()
+        qs = super().get_queryset()
+        logger.debug(f"Hunter queryset count: {qs.count()}")
+        return qs
 
     def get_serializer_class(self):
-        if self.request.method == 'POST' or self.request.method == 'PUT':
+        if self.request.method in ('POST', 'PUT'):
+            logger.debug("Using HunterCreateSerializer for write operation")
             return HunterCreateSerializer
         return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]
-        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+        if self.request.method in ('POST', 'PUT', 'DELETE'):
             self.permission_classes = [permissions.IsAdminUser]
+        logger.debug(f"HunterViewSet permissions: {self.permission_classes}")
         return super().get_permissions()
 
 class GuildViewSet(viewsets.ModelViewSet):
@@ -109,41 +128,56 @@ class GuildViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60 * 15, key_prefix='guild_list'))
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
+        logger.info("Fetching guild list")
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
         import time
+        logger.debug("Delaying guild queryset for simulation")
         time.sleep(2)
-        return super().get_queryset()
+        qs = super().get_queryset()
+        logger.debug(f"Guild queryset count: {qs.count()}")
+        return qs
 
     def get_serializer_class(self):
-        if self.request.method == 'POST' or self.request.method == 'PUT':
+        if self.request.method in ('POST', 'PUT'):
+            logger.debug("Using GuildCreateSerializer for write operation")
             return GuildCreateSerializer
         return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]
-        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+        if self.request.method in ('POST', 'PUT', 'DELETE'):
             self.permission_classes = [permissions.IsAdminUser]
+        logger.debug(f"GuildViewSet permissions: {self.permission_classes}")
         return super().get_permissions()
+
+    def perform_create(self, serializer):
+        guild = serializer.save()
+        logger.info(f"Guild created: {guild.name} (ID: {guild.pk})")
 
 class GuildInviteView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = GuildInviteSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            logger.warning(f"Guild invite validation failed: {serializer.errors}")
+            serializer.is_valid(raise_exception=True)
+
         hunter_id = serializer.validated_data['hunter_id']
         guild_id = serializer.validated_data['guild_id']
 
         guild = Guild.objects.get(pk=guild_id)
         if request.user != guild.leader:
+            logger.warning(f"Unauthorized guild invite attempt by {request.user}")
             return Response(
                 {"error": "You do not have permission to invite hunters to this guild."},
                 status=status.HTTP_403_FORBIDDEN
             )
 
         # Trigger Celery task
+        logger.info(f"Guild invite sent: Hunter ID {hunter_id} to Guild {guild.name} (ID: {guild_id}) by {request.user}")
         task = send_guild_invite_email.delay(hunter_id, guild_id)
         return Response(
             {"message": "Guild invite email is being sent.", "task_id": task.id},
@@ -164,17 +198,27 @@ class DungeonViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60 * 15, key_prefix='dungeon_list'))
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
+        logger.info("Fetching dungeon list")
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
         import time
+        logger.debug("Delaying dungeon queryset for simulation")
         time.sleep(2)
-        return super().get_queryset()
+        qs = super().get_queryset()
+        logger.debug(f"Dungeon queryset count: {qs.count()}")
+        return qs
 
     def get_serializer_class(self):
-        if self.request.method == 'POST' or self.request.method == 'PUT':
+        if self.request.method in ('POST', 'PUT'):
+            logger.debug("Using DungeonCreateSerializer for write operation")
             return DungeonCreateSerializer
         return super().get_serializer_class()
+    
+    def perform_create(self, serializer):
+        dungeon = serializer.save()
+        logger.info(f"Dungeon created: {dungeon.name} (Rank: {dungeon.rank})")
+
 
 class RaidParticipationViewSet(viewsets.ModelViewSet):
     queryset = RaidParticipation.objects.select_related('raid', 'hunter').all()
@@ -187,30 +231,42 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60 * 15, key_prefix='participation_list'))
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
+        logger.info(f"Fetching raid participations for user {request.user}")
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
         import time
+        logger.debug("Delaying raid participation queryset for simulation")
         time.sleep(2)
         
         qs = super().get_queryset()
         
-        # Only show participations for the authenticated hunter if not staff
         if not self.request.user.is_staff:
+            logger.debug(f"Filtering participations for hunter {self.request.user}")
             qs = qs.filter(hunter=self.request.user)
         
+        logger.debug(f"Raid participation queryset count: {qs.count()}")
         return qs
 
     def get_serializer_class(self):
-        if self.request.method == 'POST' or self.request.method == 'PUT':
+        if self.request.method in ('POST', 'PUT'):
+            logger.debug("Using RaidParticipationCreateSerializer for write operation")
             return RaidParticipationCreateSerializer
         return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.IsAuthenticated]
-        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+        if self.request.method in ('POST', 'PUT', 'DELETE'):
             self.permission_classes = [permissions.IsAdminUser]
+        logger.debug(f"RaidParticipationViewSet permissions: {self.permission_classes}")
         return super().get_permissions()
+    
+    def perform_create(self, serializer):
+        participation = serializer.save()
+        logger.info(
+            f"Raid participation created: Hunter {participation.hunter} "
+            f"in Raid {participation.raid} — Damage: {participation.damage_dealt}, Healing: {participation.healing_done}"
+        )
 
 
 class RaidViewSet(viewsets.ModelViewSet):
@@ -230,24 +286,32 @@ class RaidViewSet(viewsets.ModelViewSet):
     @method_decorator(cache_page(60 * 15, key_prefix='raid_list'))
     @method_decorator(vary_on_headers('Authorization'))
     def list(self, request, *args, **kwargs):
+        logger.info("Fetching raid list")
         return super().list(request, *args, **kwargs)
     
     def perform_create(self, serializer):
         raid = serializer.save()
+        logger.info(f"Raid created: {raid.name} (ID: {raid.raid_id}) — Sending notification email")
         send_raid_notification_email.delay(raid.raid_id)
     
     def get_queryset(self):
         import time
+        logger.debug("Delaying raid queryset for simulation")
         time.sleep(2)
-        return super().get_queryset()
+        qs = super().get_queryset()
+        logger.debug(f"Raid queryset count: {qs.count()}")
+        return qs
 
     def get_serializer_class(self):
-        if self.request.method == 'POST' or self.request.method == 'PUT':
+        if self.request.method in ('POST', 'PUT'):
+            logger.debug("Using RaidCreateSerializer for write operation")
             return RaidCreateSerializer
         return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]
-        if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
+        if self.request.method in ('POST', 'PUT', 'DELETE'):
             self.permission_classes = [permissions.IsAdminUser]
+        logger.debug(f"RaidViewSet permissions: {self.permission_classes}")
         return super().get_permissions()
+
