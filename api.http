@@ -1,58 +1,4 @@
-POST http://localhost:8000/api/hunters/ HTTP/1.1
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM4OTAzLCJpYXQiOjE3NTUyMzUzMDMsImp0aSI6IjI3MDVjMThlMjNjODRiNDBhYjFmMmU0OWE3Njc0YWY2IiwidXNlcl9pZCI6IjMzIn0.gWXAzxXeaJDtqj_Sc-q6-32Lmx0tX8bhBm8-Szi9LDc
-
-{
-    "first_name": "CJ", 
-    "last_name": "Ping", 
-    "username": "cjping", 
-    "password": "test", 
-    "email": "ping@example.com",
-    "rank": "E",
-    "skills": [41],
-    "guild": null
-}
-
-###
-
-POST http://localhost:8000/api/raids/ HTTP/1.1
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjI5NjE2LCJpYXQiOjE3NTUyMjYwMTYsImp0aSI6IjQ5OWNiZTMwNTMxZDRhNDA4Y2I1NTU0NGFiMWM2MzQwIiwidXNlcl9pZCI6IjM2In0.HN7_k2lpjrO24zO1zFKJurB-pzsx3c7ixZiuC2JdwS4
-
-{
-    "name": "China Raid",
-    "dungeon": 8,
-    "date": "2023-06-01",
-    "success": false,
-    "participations": [
-        {"hunter_id": 19, "role": "DPS"},
-        {"hunter_id": 21, "role": "Healer"}
-    ]
-}
-
-
-###
-
-POST http://localhost:8000/api/token/ HTTP/1.1
-Content-Type: application/json
-
-{
-    "username": "scottlaura",
-    "password": "password123"
-}
-
-###
-
-POST http://localhost:8000/api/token/ HTTP/1.1
-Content-Type: application/json
-
-{
-    "username": "kurtamodia",
-    "password": "kmgwapo12"
-}
-
-###
-
+### ===== AUTHENTICATION =====
 POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
@@ -62,18 +8,236 @@ Content-Type: application/json
 }
 
 ###
-
-GET http://localhost:8000/api/raid-participations/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM5NDcyLCJpYXQiOjE3NTUyMzU4NzIsImp0aSI6IjU2MjZlZTgyNmI0NzQ4OWZhMTNjNGQ0NTc1NjY3YjJlIiwidXNlcl9pZCI6IjI1In0.OSzUuAs6qng1LbeRJKJ8HfbWOe3CmVozXgLcov2gSW8
-
-
-###
-
-POST http://localhost:8000/api/guild-invite/ HTTP/1.1
+POST http://localhost:8000/api/token/refresh/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM5MDM4LCJpYXQiOjE3NTUyMzU0MzgsImp0aSI6ImU1MzI0Yjg3OGJkNjRlNTFiNzdhMjEyN2M5NWU2OGNiIiwidXNlcl9pZCI6IjM2In0.-zbsPzGbDHMexFbYwek1jSrkbEugt3P2tWaKl3pxpdA
 
 {
-    "guild_id": 10,
-    "hunter_id": 38
+    "refresh": "PASTE_REFRESH_TOKEN_HERE"
 }
+
+### ===== SKILLS =====
+GET http://localhost:8000/api/skills/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/skills/1/ HTTP/1.1
+
+###
+POST http://localhost:8000/api/skills/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Ice Blast",
+    "element": "Ice",
+    "power": 75
+}
+
+###
+PUT http://localhost:8000/api/skills/1/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Ice Blast Plus",
+    "element": "Ice",
+    "power": 85
+}
+
+###
+DELETE http://localhost:8000/api/skills/1/ HTTP/1.1
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+
+### ===== HUNTERS =====
+GET http://localhost:8000/api/hunters/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/hunters/1/ HTTP/1.1
+
+###
+POST http://localhost:8000/api/hunters/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "first_name": "CJ", 
+    "last_name": "Ping", 
+    "username": "cjping", 
+    "password": "test", 
+    "email": "ping@example.com",
+    "rank": "E",
+    "skills": [1],
+    "guild": null
+}
+
+###
+PUT http://localhost:8000/api/hunters/1/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "first_name": "CJ", 
+    "last_name": "Ping", 
+    "username": "cjping", 
+    "email": "ping@example.com",
+    "rank": "D",
+    "skills": [1],
+    "guild": null
+}
+
+###
+DELETE http://localhost:8000/api/hunters/1/ HTTP/1.1
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+
+### ===== GUILDS =====
+GET http://localhost:8000/api/guilds/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/guilds/1/ HTTP/1.1
+
+###
+POST http://localhost:8000/api/guilds/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Frost Wolves",
+    "leader": 1
+}
+
+###
+PUT http://localhost:8000/api/guilds/1/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Frost Wolves Elite",
+    "leader": 1
+}
+
+###
+DELETE http://localhost:8000/api/guilds/1/ HTTP/1.1
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+
+### ===== GUILD INVITE =====
+POST http://localhost:8000/api/guild-invite/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_LEADER_ACCESS_TOKEN_HERE
+
+{
+    "guild_id": 1,
+    "hunter_id": 2
+}
+
+
+### ===== DUNGEONS =====
+GET http://localhost:8000/api/dungeons/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/dungeons/1/ HTTP/1.1
+
+###
+POST http://localhost:8000/api/dungeons/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Frozen Cavern",
+    "location": "North Mountains",
+    "rank": "B"
+}
+
+###
+PUT http://localhost:8000/api/dungeons/1/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Frozen Cavern Deep",
+    "location": "North Mountains",
+    "rank": "A"
+}
+
+###
+DELETE http://localhost:8000/api/dungeons/1/ HTTP/1.1
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+
+### ===== RAIDS =====
+GET http://localhost:8000/api/raids/ HTTP/1.1
+
+###
+GET http://localhost:8000/api/raids/1/ HTTP/1.1
+
+###
+POST http://localhost:8000/api/raids/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Dragon Hunt",
+    "dungeon": 1,
+    "date": "2023-06-01",
+    "success": true,
+    "participations": [
+        {"hunter_id": 1, "role": "DPS"},
+        {"hunter_id": 2, "role": "Tank"}
+    ]
+}
+
+###
+PUT http://localhost:8000/api/raids/1/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "name": "Dragon Hunt Extreme",
+    "dungeon": 1,
+    "date": "2023-06-02",
+    "success": false
+}
+
+###
+DELETE http://localhost:8000/api/raids/1/ HTTP/1.1
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+
+### ===== RAID PARTICIPATIONS =====
+GET http://localhost:8000/api/raid-participations/ HTTP/1.1
+Authorization: Bearer PASTE_ACCESS_TOKEN_HERE
+
+###
+GET http://localhost:8000/api/raid-participations/1/ HTTP/1.1
+Authorization: Bearer PASTE_ACCESS_TOKEN_HERE
+
+###
+POST http://localhost:8000/api/raid-participations/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "raid": 1,
+    "hunter": 1,
+    "role": "Healer",
+    "damage_dealt": 5000,
+    "healing_done": 3000
+}
+
+###
+PUT http://localhost:8000/api/raid-participations/1/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
+
+{
+    "raid": 1,
+    "hunter": 1,
+    "role": "Healer",
+    "damage_dealt": 5500,
+    "healing_done": 3200
+}
+
+###
+DELETE http://localhost:8000/api/raid-participations/1/ HTTP/1.1
+Authorization: Bearer PASTE_ADMIN_ACCESS_TOKEN_HERE
