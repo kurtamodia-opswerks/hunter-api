@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Hunter, Guild
+from api.models import Hunter, Guild
 
 class GuildMemberSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()

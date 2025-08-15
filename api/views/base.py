@@ -5,8 +5,8 @@ from django.views.decorators.vary import vary_on_headers
 from rest_framework import viewsets, permissions, filters
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
-from ..models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
-from ..serializers import (
+from api.models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
+from api.serializers import (
     HunterSerializer,
     GuildSerializer,
     SkillSerializer,
@@ -19,8 +19,8 @@ from ..serializers import (
     RaidCreateSerializer,
     RaidParticipationCreateSerializer
 )
-from ..filters import HunterFilter, GuildFilter, SkillFilter, RaidFilter, RaidParticipationFilter, ActiveDungeonFilterBackend
-from ..tasks import (
+from api.filters import HunterFilter, GuildFilter, SkillFilter, RaidFilter, RaidParticipationFilter, ActiveDungeonFilterBackend
+from api.tasks import (
     send_hunter_welcome_email,
     send_raid_notification_email,
     send_guild_creation_email

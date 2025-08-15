@@ -1,6 +1,6 @@
 import django_filters
 from rest_framework import filters
-from .models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
+from api.models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
 
 class ActiveDungeonFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):

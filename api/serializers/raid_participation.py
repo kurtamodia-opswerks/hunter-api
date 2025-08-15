@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import RaidParticipation, Hunter, Raid
+from api.models import RaidParticipation, Hunter, Raid
 
 class ParticipationSerializer(serializers.ModelSerializer):
     hunter_id = serializers.IntegerField(source='hunter.id', read_only=True)

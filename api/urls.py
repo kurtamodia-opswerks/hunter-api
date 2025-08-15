@@ -2,7 +2,7 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from rest_framework.routers import DefaultRouter
-from .views import (
+from api.views import (
     HunterViewSet,
     GuildViewSet,
     GuildInviteView,

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Dungeon
+from api.models import Dungeon
 
 class DungeonSerializer(serializers.ModelSerializer):
     rank_display = serializers.CharField(source='get_rank_display', read_only=True)

@@ -1,6 +1,6 @@
-from .hunter import HunterSerializer, HunterCreateSerializer
-from .guild import GuildMemberSerializer, GuildSerializer, GuildCreateSerializer, GuildInviteSerializer
-from .skill import SkillSerializer
-from .dungeon import DungeonSerializer, DungeonBriefSerializer, DungeonCreateSerializer
-from .raid import RaidSerializer, RaidCreateSerializer, RaidInviteSerializer
-from .raid_participation import ParticipationSerializer, RaidParticipationSerializer, RaidParticipationNestedSerializer, RaidParticipationCreateSerializer
+from api.serializers.hunter import HunterSerializer, HunterCreateSerializer
+from api.serializers.guild import GuildMemberSerializer, GuildSerializer, GuildCreateSerializer, GuildInviteSerializer
+from api.serializers.skill import SkillSerializer
+from api.serializers.dungeon import DungeonSerializer, DungeonBriefSerializer, DungeonCreateSerializer
+from api.serializers.raid import RaidSerializer, RaidCreateSerializer, RaidInviteSerializer
+from api.serializers.raid_participation import ParticipationSerializer, RaidParticipationSerializer, RaidParticipationNestedSerializer, RaidParticipationCreateSerializer

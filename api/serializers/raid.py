@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from ..models import Raid, Hunter, RaidParticipation, Dungeon
-from .dungeon import DungeonBriefSerializer
-from .raid_participation import ParticipationSerializer, RaidParticipationNestedSerializer
+from api.models import Raid, Hunter, RaidParticipation, Dungeon
+from api.serializers.dungeon import DungeonBriefSerializer
+from api.serializers.raid_participation import ParticipationSerializer, RaidParticipationNestedSerializer
 
 class RaidSerializer(serializers.ModelSerializer):
     dungeon_info = DungeonBriefSerializer(source='dungeon', read_only=True)

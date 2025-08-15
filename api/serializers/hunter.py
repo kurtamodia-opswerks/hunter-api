@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .skill import SkillSerializer
-from ..models import Hunter, Skill, Guild
+from api.models import Hunter, Skill, Guild
 
 class HunterSerializer(serializers.ModelSerializer):
     skills = SkillSerializer(many=True, read_only=True)

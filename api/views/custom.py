@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 
-from ..models import Guild, Raid
-from ..serializers import (
+from api.models import Guild, Raid
+from api.serializers import (
     GuildInviteSerializer,
     RaidInviteSerializer
 )

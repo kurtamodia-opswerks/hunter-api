@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
+from api.models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
 
 class HunterInline(admin.TabularInline):
     model = Hunter
