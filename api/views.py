@@ -136,7 +136,6 @@ class GuildInviteView(APIView):
         hunter_id = serializer.validated_data['hunter_id']
         guild_id = serializer.validated_data['guild_id']
 
-        # Optional: check permissions (guild leader or admin)
         guild = Guild.objects.get(pk=guild_id)
         if request.user != guild.leader:
             return Response(
@@ -250,5 +249,5 @@ class RaidViewSet(viewsets.ModelViewSet):
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]
         if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
-            self.permission_classes = [permissions.IsAuthenticated]
+            self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()

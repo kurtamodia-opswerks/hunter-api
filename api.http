@@ -1,16 +1,16 @@
 POST http://localhost:8000/api/hunters/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTk3Mjk3LCJpYXQiOjE3NTUxOTM2OTcsImp0aSI6ImY1M2YyZDE2MTk3MDQwZGVhZWRlZDZlNmVjMmQ2OGNjIiwidXNlcl9pZCI6IjMzIn0.HLjL6E91AmrUbVukuEfGxFxXgdGOS6hS1cxa82m4Zb4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM4OTAzLCJpYXQiOjE3NTUyMzUzMDMsImp0aSI6IjI3MDVjMThlMjNjODRiNDBhYjFmMmU0OWE3Njc0YWY2IiwidXNlcl9pZCI6IjMzIn0.gWXAzxXeaJDtqj_Sc-q6-32Lmx0tX8bhBm8-Szi9LDc
 
 {
-    "first_name": "David", 
-    "last_name": "Garcia", 
-    "username": "david", 
+    "first_name": "CJ", 
+    "last_name": "Ping", 
+    "username": "cjping", 
     "password": "test", 
-    "email": "0G2c4@example.com",
-    "rank": "A",
+    "email": "ping@example.com",
+    "rank": "E",
     "skills": [41],
-    "guild": 9
+    "guild": null
 }
 
 ###
@@ -64,16 +64,16 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8000/api/raid-participations/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM0NDgwLCJpYXQiOjE3NTUyMzA4ODAsImp0aSI6IjVlYzM2NWUxYTgzMjQ5MzY5YWJkNzg1N2QxNjI0YmMxIiwidXNlcl9pZCI6IjI1In0.jFkSiJ421PM5rl-dnbAkwWraFu1gDTn-pk3P7YDHTkw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM5NDcyLCJpYXQiOjE3NTUyMzU4NzIsImp0aSI6IjU2MjZlZTgyNmI0NzQ4OWZhMTNjNGQ0NTc1NjY3YjJlIiwidXNlcl9pZCI6IjI1In0.OSzUuAs6qng1LbeRJKJ8HfbWOe3CmVozXgLcov2gSW8
 
 
 ###
 
 POST http://localhost:8000/api/guild-invite/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM2MzU3LCJpYXQiOjE3NTUyMzI3NTcsImp0aSI6ImQzYTE0ZGRmYWEwNTQ0NzE4YzI0ZTIyNjcyYjcwYWVjIiwidXNlcl9pZCI6IjM2In0.7pMNH1yR3Ja5rvFCNbU9wR9jtIPjcZmrpZ681zLF6A4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjM5MDM4LCJpYXQiOjE3NTUyMzU0MzgsImp0aSI6ImU1MzI0Yjg3OGJkNjRlNTFiNzdhMjEyN2M5NWU2OGNiIiwidXNlcl9pZCI6IjM2In0.-zbsPzGbDHMexFbYwek1jSrkbEugt3P2tWaKl3pxpdA
 
 {
     "guild_id": 10,
-    "hunter_id": 18
+    "hunter_id": 38
 }
