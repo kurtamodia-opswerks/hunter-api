@@ -17,16 +17,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 POST http://localhost:8000/api/raids/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MTk4MzAxLCJpYXQiOjE3NTUxOTQ3MDEsImp0aSI6IjAzOTlhN2MxOGZkZDQ5ODE4NmNiZDBjMGFmNGFiNWYzIiwidXNlcl9pZCI6IjMzIn0.z2q_Rp9sQuNMabJq1ajT0c4m31JV6lotwhVzY0hepCg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjI5NjE2LCJpYXQiOjE3NTUyMjYwMTYsImp0aSI6IjQ5OWNiZTMwNTMxZDRhNDA4Y2I1NTU0NGFiMWM2MzQwIiwidXNlcl9pZCI6IjM2In0.HN7_k2lpjrO24zO1zFKJurB-pzsx3c7ixZiuC2JdwS4
 
 {
-    "name": "Raid 1",
-    "dungeon": 6,
+    "name": "China Raid",
+    "dungeon": 8,
     "date": "2023-06-01",
     "success": false,
     "participations": [
-        {"hunter_id": 18, "role": "Healer"},
-        {"hunter_id": 20, "role": "Healer"}
+        {"hunter_id": 19, "role": "DPS"},
+        {"hunter_id": 21, "role": "Healer"}
     ]
 }
 
@@ -37,6 +37,6 @@ POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username": "admin",
-    "password": "admin"
+    "username": "kurtamodia",
+    "password": "kmgwapo12"
 }
