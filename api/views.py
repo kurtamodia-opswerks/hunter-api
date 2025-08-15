@@ -167,7 +167,14 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         import time
         time.sleep(2)
-        return super().get_queryset()
+        
+        qs = super().get_queryset()
+        
+        # Only show participations for the authenticated hunter if not staff
+        if not self.request.user.is_staff:
+            qs = qs.filter(hunter=self.request.user)
+        
+        return qs
 
     def get_serializer_class(self):
         if self.request.method == 'POST' or self.request.method == 'PUT':
@@ -175,9 +182,9 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
     
     def get_permissions(self):  
-        self.permission_classes = [permissions.AllowAny]
+        self.permission_classes = [permissions.IsAuthenticated]
         if self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'DELETE':
-            self.permission_classes = [permissions.IsAuthenticated]
+            self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()
 
 
