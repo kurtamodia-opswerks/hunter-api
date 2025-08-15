@@ -9,6 +9,7 @@ class HunterAPITestCase(APITestCase):
         self.guild = Guild.objects.create(name='Test Guild', leader=None)
         self.skill = Skill.objects.create(name='Fireball', element='Fire', power=50)
 
+        # Create Admin Hunter
         self.admin_hunter = Hunter.objects.create(
             username='adminhunter',
             first_name='Admin',
@@ -22,6 +23,7 @@ class HunterAPITestCase(APITestCase):
         self.admin_hunter.set_password('adminpass')
         self.admin_hunter.save()
 
+        # Create Normal Hunter
         self.normal_hunter = Hunter.objects.create(
             username='normalhunter',
             first_name='Normal',
@@ -35,6 +37,7 @@ class HunterAPITestCase(APITestCase):
         self.normal_hunter.set_password('userpass')
         self.normal_hunter.save()
 
+        # Create Hunter
         self.hunter = Hunter.objects.create(
             username='johndoe',
             first_name='John',
@@ -105,3 +108,91 @@ class HunterAPITestCase(APITestCase):
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Hunter.objects.filter(pk=self.hunter.pk).exists())
+
+class GuildAPITestCase(APITestCase):
+    def setUp(self):
+        # Create Guilds
+        self.guild1 = Guild.objects.create(name='Guild One', leader=None)
+        self.guild2 = Guild.objects.create(name='Guild Two', leader=None)
+
+        # Create Hunters
+        self.admin_hunter = Hunter.objects.create(
+            username='adminhunter',
+            first_name='Admin',
+            last_name='Hunter',
+            email='admin@example.com',
+            rank='A',
+            guild=self.guild1,
+            is_staff=True,
+            is_superuser=True
+        )
+        self.admin_hunter.set_password('adminpass')
+        self.admin_hunter.save()
+
+        self.normal_hunter = Hunter.objects.create(
+            username='normalhunter',
+            first_name='Normal',
+            last_name='Hunter',
+            email='normal@example.com',
+            rank='C',
+            guild=self.guild2,
+            is_staff=False,
+            is_superuser=False
+        )
+        self.normal_hunter.set_password('userpass')
+        self.normal_hunter.save()
+
+        # URLs
+        self.list_url = reverse('guild-list')
+        self.detail_url = reverse('guild-detail', kwargs={'pk': self.guild1.pk})
+
+    def test_get_guild_list(self):
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        guild_names = [g['name'] for g in response.data['results']]
+        self.assertIn(self.guild1.name, guild_names)
+        self.assertIn(self.guild2.name, guild_names)
+
+    def test_get_guild_detail(self):
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['id'], self.guild1.id)
+
+    def test_create_guild_unauthorized(self):
+        data = {'name': 'New Guild'}
+        response = self.client.post(self.list_url, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_create_guild_as_admin(self):
+        self.client.login(username='adminhunter', password='adminpass')
+        
+        data = {
+            'name': 'Admin Guild',
+            'leader': self.admin_hunter.pk  
+        }
+        
+        response = self.client.post(self.list_url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Guild.objects.filter(name='Admin Guild').exists())
+
+    def test_update_guild_as_admin(self):
+        self.client.login(username='adminhunter', password='adminpass')
+        data = {'name': 'Updated Guild'}
+        response = self.client.patch(self.detail_url, data)
+        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST])
+        self.guild1.refresh_from_db()
+        self.assertEqual(self.guild1.name, 'Updated Guild')
+
+    def test_delete_guild_permissions(self):
+        # Normal hunter should not delete
+        self.client.login(username='normalhunter', password='userpass')
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(Guild.objects.filter(pk=self.guild1.pk).exists())
+
+        # Admin hunter can delete
+        self.client.login(username='adminhunter', password='adminpass')
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Guild.objects.filter(pk=self.guild1.pk).exists())
+
