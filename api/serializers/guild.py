@@ -34,3 +34,17 @@ class GuildCreateSerializer(serializers.ModelSerializer):
         if not data.get('leader'):
             raise serializers.ValidationError({"leader": "Guild leader is required."})
         return data
+
+class GuildInviteSerializer(serializers.Serializer):
+    hunter_id = serializers.IntegerField()
+    guild_id = serializers.IntegerField()
+
+    def validate_hunter_id(self, value):
+        if not Hunter.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("Hunter with this ID does not exist.")
+        return value
+
+    def validate_guild_id(self, value):
+        if not Guild.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("Guild with this ID does not exist.")
+        return value

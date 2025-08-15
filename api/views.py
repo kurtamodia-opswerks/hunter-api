@@ -1,7 +1,10 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
-from rest_framework import viewsets, permissions, filters
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, filters, status
+from django.shortcuts import get_object_or_404
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
@@ -16,7 +19,8 @@ from .serializers import (
     GuildCreateSerializer,
     DungeonCreateSerializer,
     RaidCreateSerializer,
-    RaidParticipationCreateSerializer
+    RaidParticipationCreateSerializer,
+    GuildInviteSerializer
 )
 from .filters import HunterFilter, GuildFilter, SkillFilter, RaidFilter, RaidParticipationFilter, ActiveDungeonFilterBackend
 from .tasks import (
@@ -87,7 +91,6 @@ class HunterViewSet(viewsets.ModelViewSet):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()
 
-
 class GuildViewSet(viewsets.ModelViewSet):
     queryset = Guild.objects.select_related('leader') \
         .prefetch_related(
@@ -124,6 +127,29 @@ class GuildViewSet(viewsets.ModelViewSet):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()
 
+class GuildInviteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = GuildInviteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        hunter_id = serializer.validated_data['hunter_id']
+        guild_id = serializer.validated_data['guild_id']
+
+        # Optional: check permissions (guild leader or admin)
+        guild = Guild.objects.get(pk=guild_id)
+        if request.user != guild.leader:
+            return Response(
+                {"error": "You do not have permission to invite hunters to this guild."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Trigger Celery task
+        task = send_guild_invite_email.delay(hunter_id, guild_id)
+        return Response(
+            {"message": "Guild invite email is being sent.", "task_id": task.id},
+            status=status.HTTP_202_ACCEPTED
+        )
 
 class DungeonViewSet(viewsets.ModelViewSet):
     queryset = Dungeon.objects.prefetch_related(

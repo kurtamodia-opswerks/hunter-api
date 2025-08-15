@@ -1,5 +1,5 @@
 from .hunter import HunterSerializer, HunterCreateSerializer
-from .guild import GuildMemberSerializer, GuildSerializer, GuildCreateSerializer
+from .guild import GuildMemberSerializer, GuildSerializer, GuildCreateSerializer, GuildInviteSerializer
 from .skill import SkillSerializer
 from .dungeon import DungeonSerializer, DungeonBriefSerializer, DungeonCreateSerializer
 from .raid import RaidSerializer, RaidCreateSerializer
