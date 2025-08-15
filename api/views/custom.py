@@ -63,7 +63,6 @@ class RaidInviteView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # Just log the invite
         logger.info(
             f"Raid invite sent: Hunter ID {hunter_id} to Raid '{raid.name}' "
             f"(ID: {raid_id}) by {request.user}"

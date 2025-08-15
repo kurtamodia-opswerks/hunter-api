@@ -1,5 +1,5 @@
 from .base import SkillViewSet, HunterViewSet, GuildViewSet, DungeonViewSet, RaidViewSet, RaidParticipationViewSet
-from .custom import GuildInviteView
+from .custom import GuildInviteView, RaidInviteView
 
 __all__ = [
     "SkillViewSet",
@@ -9,4 +9,5 @@ __all__ = [
     "DungeonViewSet",
     "RaidViewSet",
     "RaidParticipationViewSet",
+    "RaidInviteView"
 ]

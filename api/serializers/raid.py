@@ -35,7 +35,7 @@ class RaidCreateSerializer(serializers.ModelSerializer):
 
 class RaidInviteSerializer(serializers.Serializer):
     hunter_id = serializers.IntegerField()
-    raid_id = serializers.IntegerField()
+    raid_id = serializers.UUIDField()
 
     def validate_hunter_id(self, value):
         if not Hunter.objects.filter(pk=value).exists():

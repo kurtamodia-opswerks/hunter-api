@@ -21,6 +21,6 @@ class DungeonCreateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if not data.get('name', '').strip():
             raise serializers.ValidationError({"name": "Dungeon name is required."})
-        if not data.get('Location', '').strip():
+        if not data.get('location', '').strip():
             raise serializers.ValidationError({"location": "Dungeon location is required."})
         return data
