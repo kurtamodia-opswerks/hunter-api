@@ -14,7 +14,7 @@ class ParticipationSerializer(serializers.ModelSerializer):
         return f"{obj.hunter.first_name} {obj.hunter.last_name}".strip()
     
 class RaidParticipationSerializer(serializers.ModelSerializer):
-    raid_id = serializers.ReadOnlyField(source='raid.raid_id')
+    raid_id = serializers.ReadOnlyField(source='raid.id')
     hunter_id = serializers.IntegerField(source='hunter.id', read_only=True)
     hunter_full_name = serializers.SerializerMethodField()
     hunter_rank = serializers.CharField(source='hunter.get_rank_display', read_only=True)
@@ -61,7 +61,7 @@ class RaidParticipationNestedSerializer(serializers.ModelSerializer):
         return value
     
 class RaidParticipationCreateSerializer(serializers.ModelSerializer):
-    raid_id = serializers.UUIDField(write_only=True)
+    raid_id = serializers.IntegerField(write_only=True)
     hunter_id = serializers.IntegerField(write_only=True)
 
     class Meta:

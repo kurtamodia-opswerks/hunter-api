@@ -7,11 +7,10 @@ class RaidSerializer(serializers.ModelSerializer):
     dungeon_info = DungeonBriefSerializer(source='dungeon', read_only=True)
     participations = ParticipationSerializer(many=True, read_only=True)
     team_strength = serializers.ReadOnlyField()
-    raid_id = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = Raid
-        fields = ['raid_id', 'name', 'dungeon_info', 'date', 'success', 'team_strength', 'participations']
+        fields = ['id', 'name', 'dungeon_info', 'date', 'success', 'team_strength', 'participations']
 
 class RaidCreateSerializer(serializers.ModelSerializer):
     dungeon = serializers.PrimaryKeyRelatedField(queryset=Dungeon.objects.filter(is_open=True))
@@ -35,14 +34,13 @@ class RaidCreateSerializer(serializers.ModelSerializer):
 
 class RaidInviteSerializer(serializers.Serializer):
     hunter_id = serializers.IntegerField()
-    raid_id = serializers.UUIDField()
 
     def validate_hunter_id(self, value):
         if not Hunter.objects.filter(pk=value).exists():
             raise serializers.ValidationError("Hunter with this ID does not exist.")
         return value
 
-    def validate_raid_id(self, value):
+    def validate_id(self, value):
         if not Raid.objects.filter(pk=value).exists():
             raise serializers.ValidationError("Raid with this ID does not exist.")
         return value

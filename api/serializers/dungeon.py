@@ -8,16 +8,7 @@ class DungeonSerializer(serializers.ModelSerializer):
         model = Dungeon
         fields = ['id', 'name', 'rank_display', 'rank', 'location', 'is_open']
         read_only_fields = ['id', 'rank_display']
-
-class DungeonBriefSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Dungeon
-        fields = ['id', 'name', 'rank']
-
-class DungeonCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Dungeon
-        fields = ['name', 'rank', 'location', 'is_open']
+        write_only_fields = ['rank']
 
     def validate(self, data):
         if not data.get('name', '').strip():
@@ -25,3 +16,9 @@ class DungeonCreateSerializer(serializers.ModelSerializer):
         if not data.get('location', '').strip():
             raise serializers.ValidationError({"location": "Dungeon location is required."})
         return data
+
+class DungeonBriefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dungeon
+        fields = ['id', 'name', 'rank']
+

@@ -6,8 +6,7 @@ from rest_framework import viewsets, permissions, filters
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from api.models import Dungeon
 from api.serializers import (
-    DungeonSerializer,
-    DungeonCreateSerializer
+    DungeonSerializer
 )
 from api.filters import ActiveDungeonFilterBackend
 
@@ -18,7 +17,6 @@ class DungeonViewSet(viewsets.ModelViewSet):
         'raids', 'raids__participations', 'raids__participations__hunter'
     ).all()
     serializer_class = DungeonSerializer
-    permission_classes = [permissions.AllowAny]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     filter_backends = [ActiveDungeonFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'location']
@@ -33,11 +31,13 @@ class DungeonViewSet(viewsets.ModelViewSet):
         time.sleep(2)
         qs = super().get_queryset()
         return qs
+    
+    def get_permissions(self):
+        self.permission_classes = [permissions.IsAuthenticated]
+        if self.request.method in ('POST', 'PUT', 'DELETE'):
+            self.permission_classes = [permissions.IsAdminUser]
 
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return DungeonCreateSerializer
-        return super().get_serializer_class()
+        return super().get_permissions()
     
     def perform_create(self, serializer):
         dungeon = serializer.save()
