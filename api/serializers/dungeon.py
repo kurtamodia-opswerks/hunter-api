@@ -8,7 +8,9 @@ class DungeonSerializer(serializers.ModelSerializer):
         model = Dungeon
         fields = ['id', 'name', 'rank_display', 'rank', 'location', 'is_open']
         read_only_fields = ['id', 'rank_display']
-        write_only_fields = ['rank']
+        extra_kwargs = {
+            'rank': {'write_only': True}
+        }
 
     def validate(self, data):
         if not data.get('name', '').strip():

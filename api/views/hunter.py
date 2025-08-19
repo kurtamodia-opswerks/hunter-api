@@ -7,8 +7,7 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from api.models import Hunter
 from api.serializers import (
-    HunterSerializer,
-    HunterCreateSerializer,
+    HunterSerializer
 )
 from api.filters import HunterFilter
 from api.tasks import (
@@ -41,11 +40,6 @@ class HunterViewSet(viewsets.ModelViewSet):
         time.sleep(2)
         qs = super().get_queryset()
         return qs
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return HunterCreateSerializer
-        return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]

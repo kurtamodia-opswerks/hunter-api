@@ -16,7 +16,9 @@ class GuildSerializer(serializers.ModelSerializer):
         model = Guild
         fields = ['id', 'name', 'founded_date', 'leader_read_only', 'leader_write_only', 'members', 'member_count']
         read_only_fields = ['id', 'founded_date', 'leader_read_only', 'member_count', 'members']
-        write_only_fields = ['leader_write_only']
+        extra_kwargs = {
+            'leader_write_only': {'write_only': True}
+        }
 
     def validate(self, data):
         if not data.get('name', '').strip():
