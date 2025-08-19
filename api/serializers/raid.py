@@ -4,24 +4,21 @@ from api.serializers.dungeon import DungeonBriefSerializer
 from api.serializers.raid_participation import ParticipationSerializer, RaidParticipationNestedSerializer
 
 class RaidSerializer(serializers.ModelSerializer):
-    dungeon_info = DungeonBriefSerializer(source='dungeon', read_only=True)
-    participations = ParticipationSerializer(many=True, read_only=True)
-    team_strength = serializers.ReadOnlyField()
-
-    class Meta:
-        model = Raid
-        fields = ['id', 'name', 'dungeon_info', 'date', 'success', 'team_strength', 'participations']
-
-class RaidCreateSerializer(serializers.ModelSerializer):
     dungeon = serializers.PrimaryKeyRelatedField(queryset=Dungeon.objects.filter(is_open=True))
-    participations = RaidParticipationNestedSerializer(many=True, required=True)
+    dungeon_info = DungeonBriefSerializer(source='dungeon', read_only=True)
+    participations_info = ParticipationSerializer(many=True, read_only=True)
+    participations_create = RaidParticipationNestedSerializer(many=True, required=True)
 
     class Meta:
         model = Raid
-        fields = ['name', 'dungeon', 'date', 'success', 'participations']
+        fields = ['id', 'name', 'dungeon', 'dungeon_info', 'date', 'success', 'team_strength', 'participations_info', 'participations_create']
+        read_only_fields = ['id', 'dungeon_info', 'team_strength', 'participations_info']
+        extra_kwargs = {
+            'participations_create': {'write_only': True}
+        }
 
     def create(self, validated_data):
-        participations_data = validated_data.pop('participations')
+        participations_data = validated_data.pop('participations_create', [])
         raid = Raid.objects.create(**validated_data)
         
         # Create participations

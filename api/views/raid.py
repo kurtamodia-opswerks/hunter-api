@@ -60,12 +60,6 @@ class RaidViewSet(viewsets.ModelViewSet):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()
     
-
-
-
-
-
-
     
 class RaidInviteView(APIView):
     permission_classes = [permissions.IsAdminUser]
