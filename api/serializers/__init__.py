@@ -1,5 +1,5 @@
 from api.serializers.hunter import HunterSerializer, HunterCreateSerializer
-from api.serializers.guild import GuildMemberSerializer, GuildSerializer, GuildCreateSerializer, GuildInviteSerializer
+from api.serializers.guild import GuildMemberSerializer, GuildSerializer,  GuildInviteSerializer
 from api.serializers.skill import SkillSerializer
 from api.serializers.dungeon import DungeonSerializer, DungeonBriefSerializer
 from api.serializers.raid import RaidSerializer, RaidCreateSerializer, RaidInviteSerializer

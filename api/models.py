@@ -76,8 +76,12 @@ class Dungeon(models.Model):
     location = models.CharField(max_length=200)
     is_open = models.BooleanField(default=True)
 
+    @property
+    def rank_display(self):
+        return self.get_rank_display()
+
     def __str__(self):
-        return f"{self.name} ({self.get_rank_display()})"
+        return f"{self.name} ({self.rank_display()})"
 
 
 class Raid(models.Model):

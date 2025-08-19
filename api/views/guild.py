@@ -10,7 +10,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from api.models import Guild
 from api.serializers import (
     GuildSerializer,
-    GuildCreateSerializer,
     GuildInviteSerializer
 )
 from api.filters import GuildFilter
@@ -49,11 +48,6 @@ class GuildViewSet(viewsets.ModelViewSet):
         time.sleep(2)
         qs = super().get_queryset()
         return qs
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return GuildCreateSerializer
-        return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.AllowAny]
