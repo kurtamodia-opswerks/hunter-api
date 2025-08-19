@@ -23,14 +23,20 @@ class Hunter(AbstractUser):
         verbose_name_plural = "Hunters"
 
     @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
+
+    @property
+    def rank_display(self):
+        return self.get_rank_display()
+    
+    @property
     def power_level(self):
         base_power = {'E': 10, 'D': 30, 'C': 50, 'B': 80, 'A': 120, 'S': 200}
-        raid_bonus = sum(participation.damage_dealt for participation in self.participations.all()) // 100
-        return base_power[self.rank] + sum(skill.power for skill in self.skills.all()) + raid_bonus
+        return base_power[self.rank] + sum(skill.power for skill in self.skills.all())
 
     def __str__(self):
-        full_name = f"{self.first_name} {self.last_name}".strip()
-        return f"{full_name} ({self.get_rank_display()})"
+        return f"{self.full_name} ({self.rank_display()})"
 
     
 class Guild(models.Model):
@@ -98,8 +104,6 @@ class RaidParticipation(models.Model):
     raid = models.ForeignKey(Raid, on_delete=models.CASCADE, related_name='participations')
     hunter = models.ForeignKey(Hunter, on_delete=models.CASCADE, related_name='participations')
     role = models.CharField(max_length=10, choices=RoleChoices.choices)
-    damage_dealt = models.PositiveIntegerField(default=0)
-    healing_done = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         full_name = f"{self.hunter.first_name} {self.hunter.last_name}".strip()
