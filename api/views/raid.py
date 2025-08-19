@@ -10,7 +10,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from api.models import Raid
 from api.serializers import (
     RaidSerializer,
-    RaidCreateSerializer,
     RaidInviteSerializer
 )
 from api.filters import RaidFilter
@@ -42,20 +41,15 @@ class RaidViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         raid = serializer.save()
-        send_raid_notification_email.delay(raid.raid_id)
+        send_raid_notification_email.delay(raid.id)
     
     def get_queryset(self):
         time.sleep(2)
         qs = super().get_queryset()
         return qs
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return RaidCreateSerializer
-        return super().get_serializer_class()
     
     def get_permissions(self):  
-        self.permission_classes = [permissions.AllowAny]
+        self.permission_classes = [permissions.IsAuthenticated]
         if self.request.method in ('POST', 'PUT', 'DELETE'):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()

@@ -7,8 +7,7 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from api.models import RaidParticipation
 from api.serializers import (
-    RaidParticipationSerializer,
-    RaidParticipationCreateSerializer
+    RaidParticipationSerializer
 )
 from api.filters import RaidParticipationFilter
 
@@ -20,7 +19,6 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = RaidParticipationFilter
-    ordering_fields = ['damage_dealt', 'healing_done']
 
     @method_decorator(cache_page(60 * 15, key_prefix='participation_list'))
     @method_decorator(vary_on_headers('Authorization'))
@@ -36,11 +34,6 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
             qs = qs.filter(hunter=self.request.user)
         
         return qs
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return RaidParticipationCreateSerializer
-        return super().get_serializer_class()
     
     def get_permissions(self):  
         self.permission_classes = [permissions.IsAuthenticated]

@@ -105,9 +105,9 @@ class RaidParticipation(models.Model):
         Healer = 'Healer'
         Support = 'Support'
 
-    raid = models.ForeignKey(Raid, on_delete=models.CASCADE, related_name='participations')
-    hunter = models.ForeignKey(Hunter, on_delete=models.CASCADE, related_name='participations')
-    role = models.CharField(max_length=10, choices=RoleChoices.choices)
+    raid = models.ForeignKey(Raid, on_delete=models.CASCADE, related_name='participations', required=True)
+    hunter = models.ForeignKey(Hunter, on_delete=models.CASCADE, related_name='participations', required=True)
+    role = models.CharField(max_length=10, choices=RoleChoices.choices, required=True)
 
     def __str__(self):
         full_name = f"{self.hunter.first_name} {self.hunter.last_name}".strip()
