@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -76,7 +75,6 @@ class Dungeon(models.Model):
 
 
 class Raid(models.Model):
-    raid_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='raids')
     date = models.DateField()

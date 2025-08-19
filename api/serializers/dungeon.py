@@ -6,7 +6,8 @@ class DungeonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dungeon
-        fields = ['id', 'name', 'rank_display', 'location', 'is_open']
+        fields = ['id', 'name', 'rank_display', 'rank', 'location', 'is_open']
+        read_only_fields = ['id', 'rank_display']
 
 class DungeonBriefSerializer(serializers.ModelSerializer):
     class Meta:
