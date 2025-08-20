@@ -1,108 +1,91 @@
 from django.core.management.base import BaseCommand
-from django.utils import timezone
-from faker import Faker
+from django.contrib.auth import get_user_model
+from api.models import Skill, Guild, Dungeon, Raid, RaidParticipation
+from datetime import date, timedelta
 import random
 
-from api.models import Hunter, Guild, Skill, Dungeon, Raid, RaidParticipation
+Hunter = get_user_model()
 
-fake = Faker()
 
 class Command(BaseCommand):
-    help = "Populate the database with sample data"
+    help = "Populate the database with demo data"
 
     def handle(self, *args, **kwargs):
-        # Clear old data
+        self.stdout.write("Clearing old data...")
         RaidParticipation.objects.all().delete()
         Raid.objects.all().delete()
         Dungeon.objects.all().delete()
+        Guild.objects.all().delete()
         Skill.objects.all().delete()
         Hunter.objects.all().delete()
-        Guild.objects.all().delete()
 
-        # Create Skills
-        elements = ['Fire', 'Water', 'Earth', 'Wind', 'Light', 'Dark']
-        skills = []
-        for _ in range(10):
-            skill = Skill.objects.create(
-                name=fake.word().capitalize(),
-                element=random.choice(elements),
-                power=random.randint(10, 100)
-            )
-            skills.append(skill)
-        self.stdout.write(self.style.SUCCESS("✅ Created Skills"))
+        self.stdout.write("Creating skills...")
+        skills = [
+            Skill.objects.create(name="Fireball", element="Fire", power=50),
+            Skill.objects.create(name="Ice Blast", element="Water", power=40),
+            Skill.objects.create(name="Earthquake", element="Earth", power=70),
+            Skill.objects.create(name="Shadow Strike", element="Shadow", power=60),
+            Skill.objects.create(name="Holy Light", element="Light", power=80),
+        ]
 
-        # Create Guilds
-        guilds = []
-        for _ in range(3):
-            guild = Guild.objects.create(
-                name=f"{fake.color_name()} Guild",
-                leader=None,  # leader will be assigned later
-                founded_date=fake.date_this_decade()
-            )
-            guilds.append(guild)
-        self.stdout.write(self.style.SUCCESS("Created Guilds"))
+        self.stdout.write("Creating hunters (users)...")
+        admin = Hunter.objects.create_superuser(
+            username="admin", email="admin@example.com", password="test", rank="S"
+        )
 
-        # Create Hunters
-        ranks = ['S', 'A', 'B', 'C']
-        hunters = []
-        for _ in range(15):
-            full_name = fake.name()
-            first_name, last_name = full_name.split(" ", 1)
-            hunter = Hunter.objects.create_user(
-                username=fake.user_name(),
-                first_name=first_name,
-                last_name=last_name,
-                email=fake.email(),
-                password="password123",
-                rank=random.choice(ranks),
-                guild=random.choice(guilds)
-            )
-            hunter.skills.set(random.sample(skills, k=random.randint(1, 3)))
-            hunters.append(hunter)
-        self.stdout.write(self.style.SUCCESS("Created Hunters"))
+        hunters = [
+            Hunter.objects.create_user(
+                username="jinwoo", first_name="Jin", last_name="Woo",
+                email="jinwoo@example.com", password="test", rank="E"
+            ),
+            Hunter.objects.create_user(
+                username="david", first_name="David", last_name="Porras",
+                email="david@example.com", password="test", rank="D"
+            ),
+            Hunter.objects.create_user(
+                username="cj", first_name="CJ", last_name="Pingal",
+                email="cj@example.com", password="test", rank="C"
+            ),
+            Hunter.objects.create_user(
+                username="sung", first_name="Sung", last_name="Jin",
+                email="sung@example.com", password="test", rank="B"
+            ),
+        ]
 
-        # Assign leaders to guilds
-        for guild in guilds:
-            leader = random.choice(hunters)
-            guild.leader = leader
-            guild.save()
+        # Assign random skills
+        for h in hunters:
+            h.skills.add(random.choice(skills))
 
-        # Create Dungeons
-        dungeons = []
-        for _ in range(5):
-            dungeon = Dungeon.objects.create(
-                name=f"{fake.city()} Dungeon",
-                rank=random.choice(ranks),
-                location=fake.city(),
-                is_open=random.choice([True, False])
-            )
-            dungeons.append(dungeon)
-        self.stdout.write(self.style.SUCCESS("Created Dungeons"))
+        self.stdout.write("Creating guilds...")
+        guild1 = Guild.objects.create(name="Hunters Guild", leader=hunters[0])
+        guild2 = Guild.objects.create(name="Shadow Wolves", leader=hunters[1])
 
-        # Create Raids
-        raids = []
-        for _ in range(8):
-            raid = Raid.objects.create(
-                name=f"{fake.word().capitalize()} Raid",
-                dungeon=random.choice(dungeons),
-                date=fake.date_this_year(),
-                success=random.choice([True, False])
-            )
-            raids.append(raid)
-        self.stdout.write(self.style.SUCCESS("Created Raids"))
+        hunters[0].guild = guild1
+        hunters[0].save()
+        hunters[1].guild = guild2
+        hunters[1].save()
 
-        # Create Raid Participations
-        roles = ['Tank', 'DPS', 'Healer']
-        for raid in raids:
-            participants = random.sample(hunters, k=random.randint(3, 6))
-            for hunter in participants:
-                RaidParticipation.objects.create(
-                    hunter=hunter,
-                    raid=raid,
-                    role=random.choice(roles),
-                    damage_dealt=random.randint(1000, 10000),
-                    healing_done=random.randint(0, 5000)
-                )
-        self.stdout.write(self.style.SUCCESS("Created Raid Participations"))
+        self.stdout.write("Creating dungeons...")
+        dungeon1 = Dungeon.objects.create(name="Goblin Cave", location="Seoul", rank="E", is_open=True)
+        dungeon2 = Dungeon.objects.create(name="Orc Fortress", location="Busan", rank="C", is_open=True)
+        dungeon3 = Dungeon.objects.create(name="Dragon Lair", location="Jeju", rank="S", is_open=False)
+
+        self.stdout.write("Creating raids...")
+        raid1 = Raid.objects.create(
+            name="Goblin Hunt",
+            dungeon=dungeon1,
+            date=date.today(),
+            success=True,
+        )
+        raid2 = Raid.objects.create(
+            name="Dragon Hunt",
+            dungeon=dungeon3,
+            date=date.today() - timedelta(days=7),
+            success=False,
+        )
+
+        RaidParticipation.objects.create(raid=raid1, hunter=hunters[0], role="Tank")
+        RaidParticipation.objects.create(raid=raid1, hunter=hunters[1], role="DPS")
+        RaidParticipation.objects.create(raid=raid2, hunter=hunters[2], role="Healer")
 
         self.stdout.write(self.style.SUCCESS("Database populated successfully!"))
