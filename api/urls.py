@@ -9,8 +9,7 @@ from api.views import (
     SkillViewSet,
     DungeonViewSet,
     RaidViewSet,
-    RaidParticipationViewSet,
-    RaidInviteView
+    RaidParticipationViewSet
 )
 
 # Create a router and register viewsets
@@ -31,5 +30,4 @@ urlpatterns = [
     path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
     path('api/guild-invite/', GuildInviteView.as_view(), name='guild-invite'),
-    path('api/raid-invite/', RaidInviteView.as_view(), name='raid-invite'),
 ]

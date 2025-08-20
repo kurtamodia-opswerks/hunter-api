@@ -48,17 +48,3 @@ class RaidSerializer(serializers.ModelSerializer):
             )
 
         return raid
-
-class RaidInviteSerializer(serializers.Serializer):
-    raid_id = serializers.IntegerField()
-    hunter_id = serializers.IntegerField()
-
-    def validate_hunter_id(self, value):
-        if not Hunter.objects.filter(pk=value).exists():
-            raise serializers.ValidationError("Hunter with this ID does not exist.")
-        return value
-
-    def validate_raid_id(self, value):
-        if not Raid.objects.filter(pk=value).exists():
-            raise serializers.ValidationError("Raid with this ID does not exist.")
-        return value
