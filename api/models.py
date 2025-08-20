@@ -36,7 +36,7 @@ class Hunter(AbstractUser):
         return base_power[self.rank] + sum(skill.power for skill in self.skills.all())
 
     def __str__(self):
-        return f"{self.full_name} ({self.rank_display()})"
+        return f"{self.full_name} ({self.rank_display})"
 
     
 class Guild(models.Model):
@@ -81,7 +81,7 @@ class Dungeon(models.Model):
         return self.get_rank_display()
 
     def __str__(self):
-        return f"{self.name} ({self.rank_display()})"
+        return f"{self.name} ({self.rank_display})"
 
 
 class Raid(models.Model):
