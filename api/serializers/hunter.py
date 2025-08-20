@@ -14,11 +14,15 @@ class HunterSerializer(serializers.ModelSerializer):
         model = Hunter
         fields = [
             'id', 'date_joined', 'full_name', 'rank_display', 'email', 'guild',
-            'skills', 'power_level', 'first_name', 'last_name', 'username', 'password', 'email', 'rank', 'skills', 'guild'
+            'skills', 'power_level', 'first_name', 'last_name', 'username', 'password', 'email', 'rank', 'skills', 'guild', 'raid_count'
         ]
-        read_only_fields = ['id', 'date_joined', 'full_name', 'rank_display', 'power_level']
+        read_only_fields = ['id', 'date_joined', 'full_name', 'rank_display', 'power_level', 'raid_count']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
+            'rank': {'write_only': True},
+            'first_name': {'write_only': True},
+            'last_name': {'write_only': True},
+            'username': {'write_only': True},
         }
 
     def create(self, validated_data):

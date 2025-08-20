@@ -3,7 +3,7 @@ from api.serializers.guild import GuildMemberSerializer, GuildSerializer,  Guild
 from api.serializers.skill import SkillSerializer
 from api.serializers.dungeon import DungeonSerializer, DungeonBriefSerializer
 from api.serializers.raid import RaidSerializer, RaidInviteSerializer
-from api.serializers.raid_participation import ParticipationSerializer, RaidParticipationSerializer, RaidParticipationNestedSerializer
+from api.serializers.raid_participation import RaidParticipationSerializer, RaidParticipationNestedSerializer
 
 __all__ = [
     'HunterSerializer',

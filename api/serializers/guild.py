@@ -8,22 +8,25 @@ class GuildMemberSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'rank_display']
 
 class GuildSerializer(serializers.ModelSerializer):
-    leader_read_only = GuildMemberSerializer(read_only=True)
-    leader_write_only = serializers.PrimaryKeyRelatedField(queryset=Hunter.objects.all(), write_only=True)
-    members = GuildMemberSerializer(many=True)
-
+    leader = serializers.PrimaryKeyRelatedField(
+        queryset=Hunter.objects.all(), write_only=True
+    )
+    leader_display = GuildMemberSerializer(source="leader", read_only=True)
+    members = GuildMemberSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Guild
-        fields = ['id', 'name', 'founded_date', 'leader_read_only', 'leader_write_only', 'members', 'member_count']
-        read_only_fields = ['id', 'founded_date', 'leader_read_only', 'member_count', 'members']
-        extra_kwargs = {
-            'leader_write_only': {'write_only': True}
-        }
+        fields = [
+            'id', 'name', 'founded_date',
+            'leader', 'leader_display',
+            'members', 'member_count'
+        ]
+        read_only_fields = ['id', 'founded_date', 'leader_display', 'member_count', 'members']
 
     def validate(self, data):
         if not data.get('name', '').strip():
             raise serializers.ValidationError({"name": "Guild name is required."})
-        if not data.get('leader_write_only'):
+        if not data.get('leader'):
             raise serializers.ValidationError({"leader": "Guild leader is required."})
         return data
 

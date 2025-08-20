@@ -1,5 +1,5 @@
 @ACCESS_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjUwOTQ3LCJpYXQiOjE3NTUyNDczNDcsImp0aSI6ImI0YzI3Njg1NjM1NzQ1NGI5YTg2NTQ5NzM0MzRkZmUyIiwidXNlcl9pZCI6IjM2In0.WsjovH_D2-4sHSLsfi7juybtBzb-u8-mmwbXGfagIeE
-@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MjUxMDE3LCJpYXQiOjE3NTUyNDc0MTcsImp0aSI6IjM5YTgwMGM4NDhmNzQyMzk4ZTNhMDlmNGM0MTZjYmZjIiwidXNlcl9pZCI6IjMzIn0.mpM9vMKG7qESqKZ3SkrntPQwbjpMGLvjjuqde92jMSs
+@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NjU4MzMyLCJpYXQiOjE3NTU2NTQ3MzIsImp0aSI6IjJjMDE2Zjg5ZTgxMjRhNjBhOTU0YTEzOTdmMDgxYjM2IiwidXNlcl9pZCI6IjEifQ.m-bhFY-wYxW_Lq0xB5DHyqgMVdulTLgZf9pY2amcAis
 ### ===== AUTHENTICATION =====
 POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
@@ -26,12 +26,12 @@ GET http://localhost:8000/api/skills/46/ HTTP/1.1
 ###
 POST http://localhost:8000/api/skills/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {{ACCESS_TOKEN}}
+Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-    "name": "Fire Blast",
-    "element": "Fire",
-    "power": 75
+    "name": "Sword Dance",
+    "element": "Light",
+    "power": 120
 }
 
 ###
@@ -59,17 +59,27 @@ GET http://localhost:8000/api/hunters/36/ HTTP/1.1
 ###
 POST http://localhost:8000/api/hunters/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {{ACCESS_TOKEN}}
+Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-    "first_name": "CJ", 
-    "last_name": "Pingal", 
-    "username": "cjpingal", 
+    "first_name": "Baek", 
+    "last_name": "Yoonho", 
+    "username": "baekyoonho", 
     "password": "test", 
-    "email": "ping@example.com",
-    "rank": "E",
-    "skills": [47],
+    "email": "baekyoonho@gmail.com",
+    "rank": "S",
+    "skills": [],
     "guild": null
+}
+
+###
+
+PATCH http://localhost:8000/api/hunters/6/
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+{
+  "skills": [3]
 }
 
 ###
@@ -102,11 +112,11 @@ GET http://localhost:8000/api/guilds/10/ HTTP/1.1
 ###
 POST http://localhost:8000/api/guilds/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {{ACCESS_TOKEN}}
+Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-    "name": "Frost Wolves",
-    "leader": 23
+    "name": "Hunters",
+    "leader": 5
 }
 
 ###
@@ -144,12 +154,12 @@ GET http://localhost:8000/api/dungeons/6/ HTTP/1.1
 ###
 POST http://localhost:8000/api/dungeons/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {{ACCESS_TOKEN}}
+Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-    "name": "Frozen Cavern",
-    "location": "North Ivory",
-    "rank": "B",
+    "name": "Ant Cave",
+    "location": "Jeju Island",
+    "rank": "S",
     "is_open": true
 }
 
@@ -178,17 +188,17 @@ GET http://localhost:8000/api/raids/75f2c13e-2cc6-4f20-8e7a-315791a9790b/ HTTP/1
 ###
 POST http://localhost:8000/api/raids/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer {{ACCESS_TOKEN}}
+Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-    "name": "Dragon Hunt",
-    "dungeon": 11,
-    "date": "2023-06-01",
-    "success": true,
-    "participations": [
-        {"hunter_id": 36, "role": "DPS"},
-        {"hunter_id": 38, "role": "Tank"}
-    ]
+  "name": "Dragon Hunt",
+  "dungeon": 3,
+  "date": "2025-08-21",
+  "success": false,
+  "participations_create": [
+    {"hunter_id": 2, "role": "Tank"},
+    {"hunter_id": 3, "role": "DPS"}
+  ]
 }
 
 ###

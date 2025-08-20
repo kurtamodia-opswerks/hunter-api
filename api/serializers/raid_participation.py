@@ -1,16 +1,6 @@
 from rest_framework import serializers
 from api.models import RaidParticipation, Hunter, Raid
 
-# For better reading only inside raid serializer
-class ParticipationSerializer(serializers.ModelSerializer):
-    hunter_id = serializers.IntegerField(source='hunter.id', read_only=True)
-    full_name = serializers.CharField(source='hunter.full_name', read_only=True)
-    hunter_rank = serializers.CharField(source='hunter.rank_display', read_only=True)
-
-    class Meta:
-        model = RaidParticipation
-        fields = ['hunter_id', 'full_name', 'hunter_rank']
-
 # For better nested creation inside raid serializer
 class RaidParticipationNestedSerializer(serializers.ModelSerializer):
     hunter_id = serializers.IntegerField()
@@ -54,6 +44,16 @@ class RaidParticipationSerializer(serializers.ModelSerializer):
             'full_name', 'hunter_rank',
             'role'
         ]
+
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)  # 👈 allow dynamic fields
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            allowed = set(fields)
+            for field_name in list(self.fields):
+                if field_name not in allowed:
+                    self.fields.pop(field_name)
 
     def validate_role(self, value):
         valid_roles = [r[0] for r in RaidParticipation.RoleChoices.choices]

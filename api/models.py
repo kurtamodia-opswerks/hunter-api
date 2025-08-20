@@ -34,6 +34,10 @@ class Hunter(AbstractUser):
     def power_level(self):
         base_power = {'E': 10, 'D': 30, 'C': 50, 'B': 80, 'A': 120, 'S': 200}
         return base_power[self.rank] + sum(skill.power for skill in self.skills.all())
+    
+    @property
+    def raid_count(self):
+        return self.completed_raids.count()
 
     def __str__(self):
         return f"{self.full_name} ({self.rank_display})"
@@ -92,7 +96,7 @@ class Raid(models.Model):
 
     @property
     def team_strength(self):
-        return sum(hunter.power_level for hunter in self.team.all())
+        return sum(p.hunter.power_level for p in self.participations.all())
 
     def __str__(self):
         return f"{self.name} - {self.dungeon.name}"
