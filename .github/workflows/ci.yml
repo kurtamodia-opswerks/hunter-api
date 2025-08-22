@@ -21,6 +21,13 @@ jobs:
 
       - name: Build and run tests
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          DB_HOST: db
+          DB_PORT: 5432
+          REDIS_URL: redis://redis:6379/1
 
       - name: Shut down containers
         if: always()
