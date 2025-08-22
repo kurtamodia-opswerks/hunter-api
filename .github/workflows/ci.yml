@@ -48,9 +48,8 @@ jobs:
 
       - name: Run migrations and tests
         run: docker compose -f docker-compose.ci.yml run --rm web sh -c "
-            python manage.py migrate --noinput &&
-            python manage.py test --noinput --parallel=1
-        "
+          python manage.py migrate --noinput &&
+          python manage.py test --noinput --parallel=1"
 
       - name: Shut down containers
         if: always()
