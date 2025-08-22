@@ -32,3 +32,9 @@ def invalidate_raid_participation_cache(sender, instance, **kwargs):
 @receiver([post_save, post_delete], sender=Skill)
 def invalidate_skill_cache(sender, instance, **kwargs):
     clear_cache("*skill_list*")
+
+# Add the leader as a member when a guild is created
+@receiver(post_save, sender=Guild)
+def add_leader_as_member(sender, instance, created, **kwargs):
+    if created and instance.leader:
+        instance.members.add(instance.leader)
