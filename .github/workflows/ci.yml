@@ -1,35 +1,51 @@
-name: CI
+name: Django Tests CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      # Optional: GitHub-hosted Postgres/Redis services can be used, but we’ll use docker-compose
+      # If you want, you can remove these and rely only on docker-compose
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+
+      - name: Set up environment variables
+        run: |
+          echo "DB_NAME=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=db" >> $GITHUB_ENV
+          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "DB_ENGINE=django.db.backends.postgresql" >> $GITHUB_ENV
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://redis:6379/1" >> $GITHUB_ENV
+          echo "DEBUG=1" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-      - name: Run tests
-        run: docker compose -f docker-compose.ci.yml up --build
-        env:
-          DB_NAME: ${{ secrets.POSTGRES_DB }}
-          DB_USER: ${{ secrets.POSTGRES_USER }}
-          DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_ENGINE: ${{ secrets.DB_ENGINE }}
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          REDIS_URL: ${{ secrets.REDIS_URL }}
-          DEBUG: 1
+      - name: Build and start containers
+        run: docker compose -f docker-compose.ci.yml up -d --build
 
-      - name: Tear down
+      - name: Wait for Postgres to be ready
+        run: |
+          until docker compose -f docker-compose.ci.yml exec -T db pg_isready -U $DB_USER -d $DB_NAME; do
+            echo "Postgres is unavailable - sleeping"
+            sleep 1
+          done
+          echo "Postgres is ready!"
+
+      - name: Run Django tests
+        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py test
+
+      - name: Shut down containers
         if: always()
         run: docker compose -f docker-compose.ci.yml down -v
