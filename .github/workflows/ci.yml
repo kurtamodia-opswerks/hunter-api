@@ -41,7 +41,7 @@ jobs:
           echo "Postgres is ready!"
 
       - name: Run Django tests
-        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py test
+        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py test --noinput
 
       - name: Shut down containers
         if: always()
