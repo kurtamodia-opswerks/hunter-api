@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  web:
+    build: .
+    container_name: django_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./hunter-api:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    command: python manage.py runserver 0.0.0.0:8000
+
+  celery:
+    build: .
+    volumes:
+      - ./hunter-api:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    command: celery -A hunter_api worker --loglevel=info
+
+volumes:
+  postgres_data:
+  redis_data:
