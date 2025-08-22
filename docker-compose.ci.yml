@@ -3,8 +3,16 @@ services:
     build: .
     volumes:
       - ./hunter-api:/app
-    env_file:
-      - .env
+    env:
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_ENGINE: ${{ secrets.DB_ENGINE }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
     depends_on:
       - db
       - redis
