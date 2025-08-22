@@ -1,27 +1,56 @@
-name: CI
+name: Django Tests CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up environment variables
+        run: |
+          echo "DB_NAME=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=db" >> $GITHUB_ENV
+          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "DB_ENGINE=django.db.backends.postgresql" >> $GITHUB_ENV
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://redis:6379/1" >> $GITHUB_ENV
+          echo "DEBUG=1" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build and run tests
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build
+      - name: Build and start containers
+        run: docker compose -f docker-compose.ci.yml up -d --build
+
+      - name: Wait for Postgres
+        run: |
+          echo "Waiting for Postgres..."
+          for i in {1..30}; do
+            docker compose -f docker-compose.ci.yml exec -T db pg_isready -U $DB_USER -d $DB_NAME && break
+            echo "Postgres not ready yet. Sleeping..."
+            sleep 2
+          done
+
+      - name: Drop test database if exists
+        run: |
+          docker compose -f docker-compose.ci.yml exec -T db \
+          psql -U $DB_USER -c "DROP DATABASE IF EXISTS test_${DB_NAME};"
+
+      - name: Run migrations and tests
+        run: docker compose -f docker-compose.ci.yml run --rm web sh -c "
+          python manage.py migrate --noinput &&
+          python manage.py test --noinput --parallel=1"
 
       - name: Shut down containers
         if: always()
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
+        run: docker compose -f docker-compose.ci.yml down -v
