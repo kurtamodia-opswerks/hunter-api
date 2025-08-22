@@ -9,9 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      # Optional: GitHub-hosted Postgres/Redis services can be used, but we’ll use docker-compose
-      # If you want, you can remove these and rely only on docker-compose
 
     steps:
       - name: Checkout code
