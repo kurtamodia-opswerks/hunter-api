@@ -46,11 +46,11 @@ jobs:
           docker compose -f docker-compose.ci.yml exec -T db \
           psql -U $DB_USER -c "DROP DATABASE IF EXISTS test_${DB_NAME};"
 
-      - name: Run migrations
-        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py migrate --noinput
-
-      - name: Run Django tests
-        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py test --noinput --parallel=1
+      - name: Run migrations and tests
+        run: docker compose -f docker-compose.ci.yml run --rm web sh -c "
+            python manage.py migrate --noinput &&
+            python manage.py test --noinput --parallel=1
+        "
 
       - name: Shut down containers
         if: always()
