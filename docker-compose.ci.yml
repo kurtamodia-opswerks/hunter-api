@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    volumes:
+      - ./hunter-api:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    command: python manage.py test

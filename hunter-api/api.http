@@ -238,9 +238,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 {
     "raid_id": "64caaeb8-0a78-46f7-89d1-2c905c5297a8",
     "hunter_id": 36,
-    "role": "Healer",
-    "damage_dealt": 5000,
-    "healing_done": 3000
+    "role": "Healer"
 }
 
 ###
@@ -251,9 +249,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 {
     "raid_id": "64caaeb8-0a78-46f7-89d1-2c905c5297a8",
     "hunter_id": 37,
-    "role": "Healer",
-    "damage_dealt": 5500,
-    "healing_done": 3200
+    "role": "Healer"
 }
 
 ###
