@@ -49,7 +49,7 @@ jobs:
       - name: Run Django tests
         run: |
           docker compose -f docker-compose.ci.yml exec -T web \
-            sh -c "python manage.py migrate --noinput && python manage.py test --noinput"
+            sh -c "python manage.py migrate --noinput && python manage.py test --noinput --parallel=1"
 
       - name: Shut down containers
         if: always()
