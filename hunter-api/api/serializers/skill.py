@@ -1,10 +1,11 @@
-from rest_framework import serializers
 from api.models import Skill
+from rest_framework import serializers
+
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ['id', 'name', 'element', 'power']
+        fields = ["id", "name", "element", "power"]
 
     def validate_name(self, value):
         if not value.strip():

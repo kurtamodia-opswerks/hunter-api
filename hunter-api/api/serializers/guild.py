@@ -1,11 +1,13 @@
+from api.models import Guild, Hunter
 from rest_framework import serializers
-from api.models import Hunter, Guild
+
 
 # For better reading only
 class GuildMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hunter
-        fields = ['id', 'full_name', 'rank_display']
+        fields = ["id", "full_name", "rank_display"]
+
 
 class GuildSerializer(serializers.ModelSerializer):
     leader = serializers.PrimaryKeyRelatedField(
@@ -13,22 +15,33 @@ class GuildSerializer(serializers.ModelSerializer):
     )
     leader_display = GuildMemberSerializer(source="leader", read_only=True)
     members = GuildMemberSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Guild
         fields = [
-            'id', 'name', 'founded_date',
-            'leader', 'leader_display',
-            'members', 'member_count'
+            "id",
+            "name",
+            "founded_date",
+            "leader",
+            "leader_display",
+            "members",
+            "member_count",
         ]
-        read_only_fields = ['id', 'founded_date', 'leader_display', 'member_count', 'members']
+        read_only_fields = [
+            "id",
+            "founded_date",
+            "leader_display",
+            "member_count",
+            "members",
+        ]
 
     def validate(self, data):
-        if not data.get('name', '').strip():
+        if not data.get("name", "").strip():
             raise serializers.ValidationError({"name": "Guild name is required."})
-        if not data.get('leader'):
+        if not data.get("leader"):
             raise serializers.ValidationError({"leader": "Guild leader is required."})
         return data
+
 
 class GuildInviteSerializer(serializers.Serializer):
     hunter_id = serializers.IntegerField()

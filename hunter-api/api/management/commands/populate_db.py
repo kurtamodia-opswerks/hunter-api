@@ -1,8 +1,9 @@
-from django.core.management.base import BaseCommand
-from django.contrib.auth import get_user_model
-from api.models import Skill, Guild, Dungeon, Raid, RaidParticipation
-from datetime import date, timedelta
 import random
+from datetime import date, timedelta
+
+from api.models import Dungeon, Guild, Raid, RaidParticipation, Skill
+from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 
 Hunter = get_user_model()
 
@@ -35,20 +36,36 @@ class Command(BaseCommand):
 
         hunters = [
             Hunter.objects.create_user(
-                username="jinwoo", first_name="Jin", last_name="Woo",
-                email="jinwoo@example.com", password="test", rank="E"
+                username="jinwoo",
+                first_name="Jin",
+                last_name="Woo",
+                email="jinwoo@example.com",
+                password="test",
+                rank="E",
             ),
             Hunter.objects.create_user(
-                username="david", first_name="David", last_name="Porras",
-                email="david@example.com", password="test", rank="D"
+                username="david",
+                first_name="David",
+                last_name="Porras",
+                email="david@example.com",
+                password="test",
+                rank="D",
             ),
             Hunter.objects.create_user(
-                username="cj", first_name="CJ", last_name="Pingal",
-                email="cj@example.com", password="test", rank="C"
+                username="cj",
+                first_name="CJ",
+                last_name="Pingal",
+                email="cj@example.com",
+                password="test",
+                rank="C",
             ),
             Hunter.objects.create_user(
-                username="sung", first_name="Sung", last_name="Jin",
-                email="sung@example.com", password="test", rank="B"
+                username="sung",
+                first_name="Sung",
+                last_name="Jin",
+                email="sung@example.com",
+                password="test",
+                rank="B",
             ),
         ]
 
@@ -66,9 +83,15 @@ class Command(BaseCommand):
         hunters[1].save()
 
         self.stdout.write("Creating dungeons...")
-        dungeon1 = Dungeon.objects.create(name="Goblin Cave", location="Seoul", rank="E", is_open=True)
-        dungeon2 = Dungeon.objects.create(name="Orc Fortress", location="Busan", rank="C", is_open=True)
-        dungeon3 = Dungeon.objects.create(name="Dragon Lair", location="Jeju", rank="S", is_open=False)
+        dungeon1 = Dungeon.objects.create(
+            name="Goblin Cave", location="Seoul", rank="E", is_open=True
+        )
+        dungeon2 = Dungeon.objects.create(
+            name="Orc Fortress", location="Busan", rank="C", is_open=True
+        )
+        dungeon3 = Dungeon.objects.create(
+            name="Dragon Lair", location="Jeju", rank="S", is_open=False
+        )
 
         self.stdout.write("Creating raids...")
         raid1 = Raid.objects.create(

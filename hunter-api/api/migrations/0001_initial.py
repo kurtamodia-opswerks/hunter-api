@@ -12,96 +12,310 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Dungeon',
+            name="Dungeon",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('rank', models.CharField(choices=[('E', 'E-Rank'), ('D', 'D-Rank'), ('C', 'C-Rank'), ('B', 'B-Rank'), ('A', 'A-Rank'), ('S', 'S-Rank')], max_length=1)),
-                ('location', models.CharField(max_length=200)),
-                ('is_open', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "rank",
+                    models.CharField(
+                        choices=[
+                            ("E", "E-Rank"),
+                            ("D", "D-Rank"),
+                            ("C", "C-Rank"),
+                            ("B", "B-Rank"),
+                            ("A", "A-Rank"),
+                            ("S", "S-Rank"),
+                        ],
+                        max_length=1,
+                    ),
+                ),
+                ("location", models.CharField(max_length=200)),
+                ("is_open", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Skill',
+            name="Skill",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('element', models.CharField(choices=[('Fire', 'Fire'), ('Water', 'Water'), ('Earth', 'Earth'), ('Shadow', 'Shadow'), ('Light', 'Light')], max_length=10)),
-                ('power', models.PositiveIntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "element",
+                    models.CharField(
+                        choices=[
+                            ("Fire", "Fire"),
+                            ("Water", "Water"),
+                            ("Earth", "Earth"),
+                            ("Shadow", "Shadow"),
+                            ("Light", "Light"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                ("power", models.PositiveIntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Hunter',
+            name="Hunter",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('username', models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, validators=[django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='username')),
-                ('first_name', models.CharField(blank=True, max_length=150, verbose_name='first name')),
-                ('last_name', models.CharField(blank=True, max_length=150, verbose_name='last name')),
-                ('email', models.EmailField(blank=True, max_length=254, verbose_name='email address')),
-                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
-                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
-                ('date_joined', models.DateField(auto_now_add=True)),
-                ('rank', models.CharField(choices=[('E', 'E-Rank'), ('D', 'D-Rank'), ('C', 'C-Rank'), ('B', 'B-Rank'), ('A', 'A-Rank'), ('S', 'S-Rank')], max_length=1)),
-                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        error_messages={
+                            "unique": "A user with that username already exists."
+                        },
+                        help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        max_length=150,
+                        unique=True,
+                        validators=[
+                            django.contrib.auth.validators.UnicodeUsernameValidator()
+                        ],
+                        verbose_name="username",
+                    ),
+                ),
+                (
+                    "first_name",
+                    models.CharField(
+                        blank=True, max_length=150, verbose_name="first name"
+                    ),
+                ),
+                (
+                    "last_name",
+                    models.CharField(
+                        blank=True, max_length=150, verbose_name="last name"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        blank=True, max_length=254, verbose_name="email address"
+                    ),
+                ),
+                (
+                    "is_staff",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates whether the user can log into this admin site.",
+                        verbose_name="staff status",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                        verbose_name="active",
+                    ),
+                ),
+                ("date_joined", models.DateField(auto_now_add=True)),
+                (
+                    "rank",
+                    models.CharField(
+                        choices=[
+                            ("E", "E-Rank"),
+                            ("D", "D-Rank"),
+                            ("C", "C-Rank"),
+                            ("B", "B-Rank"),
+                            ("A", "A-Rank"),
+                            ("S", "S-Rank"),
+                        ],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.group",
+                        verbose_name="groups",
+                    ),
+                ),
+                (
+                    "user_permissions",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="Specific permissions for this user.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.permission",
+                        verbose_name="user permissions",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Hunter',
-                'verbose_name_plural': 'Hunters',
+                "verbose_name": "Hunter",
+                "verbose_name_plural": "Hunters",
             },
             managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+                ("objects", django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
-            name='Guild',
+            name="Guild",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('founded_date', models.DateField(auto_now_add=True)),
-                ('leader', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='led_guild', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("founded_date", models.DateField(auto_now_add=True)),
+                (
+                    "leader",
+                    models.OneToOneField(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="led_guild",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='hunter',
-            name='guild',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='members', to='api.guild'),
+            model_name="hunter",
+            name="guild",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="members",
+                to="api.guild",
+            ),
         ),
         migrations.CreateModel(
-            name='Raid',
+            name="Raid",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('date', models.DateField()),
-                ('success', models.BooleanField(default=False)),
-                ('dungeon', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='raids', to='api.dungeon')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("date", models.DateField()),
+                ("success", models.BooleanField(default=False)),
+                (
+                    "dungeon",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="raids",
+                        to="api.dungeon",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='RaidParticipation',
+            name="RaidParticipation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('role', models.CharField(choices=[('Tank', 'Tank'), ('DPS', 'Dps'), ('Healer', 'Healer'), ('Support', 'Support')], max_length=10)),
-                ('hunter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to=settings.AUTH_USER_MODEL)),
-                ('raid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to='api.raid')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "role",
+                    models.CharField(
+                        choices=[
+                            ("Tank", "Tank"),
+                            ("DPS", "Dps"),
+                            ("Healer", "Healer"),
+                            ("Support", "Support"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "hunter",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="participations",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "raid",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="participations",
+                        to="api.raid",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='hunter',
-            name='completed_raids',
-            field=models.ManyToManyField(related_name='completed_by', through='api.RaidParticipation', to='api.raid'),
+            model_name="hunter",
+            name="completed_raids",
+            field=models.ManyToManyField(
+                related_name="completed_by",
+                through="api.RaidParticipation",
+                to="api.raid",
+            ),
         ),
         migrations.AddField(
-            model_name='hunter',
-            name='skills',
-            field=models.ManyToManyField(blank=True, related_name='hunters', to='api.skill'),
+            model_name="hunter",
+            name="skills",
+            field=models.ManyToManyField(
+                blank=True, related_name="hunters", to="api.skill"
+            ),
         ),
     ]

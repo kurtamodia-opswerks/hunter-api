@@ -1,8 +1,8 @@
-from django.urls import reverse
-from rest_framework.test import APITestCase
-from rest_framework import status
+from api.models import Guild, Hunter, Skill
 from django.contrib.auth import get_user_model
-from api.models import Guild, Skill, Hunter
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
 
 User = get_user_model()
 
@@ -20,7 +20,7 @@ class HunterAPITests(APITestCase):
             first_name="Jin",
             last_name="Woo",
             email="jinwoo@example.com",
-            rank="E"
+            rank="E",
         )
 
         # Create admin hunter
@@ -30,18 +30,18 @@ class HunterAPITests(APITestCase):
             first_name="Admin",
             last_name="User",
             email="admin@example.com",
-            rank="S"
+            rank="S",
         )
 
         # Auth tokens
         token_url = reverse("token_obtain_pair")
-        self.hunter_token = self.client.post(token_url, {
-            "username": "sjinwoo", "password": "test"
-        }).data["access"]
+        self.hunter_token = self.client.post(
+            token_url, {"username": "sjinwoo", "password": "test"}
+        ).data["access"]
 
-        self.admin_token = self.client.post(token_url, {
-            "username": "adminuser", "password": "adminpass"
-        }).data["access"]
+        self.admin_token = self.client.post(
+            token_url, {"username": "adminuser", "password": "adminpass"}
+        ).data["access"]
 
     def test_list_hunters(self):
         url = reverse("hunter-list")
@@ -65,7 +65,7 @@ class HunterAPITests(APITestCase):
             "email": "davidporras@example.com",
             "rank": "E",
             "skills": [self.skill.id],
-            "guild": self.guild.id
+            "guild": self.guild.id,
         }
 
         # Non-admin cannot create
@@ -98,7 +98,7 @@ class HunterAPITests(APITestCase):
             "email": "jinwoo@example.com",
             "rank": "D",
             "skills": [],
-            "guild": None
+            "guild": None,
         }
         res = self.client.put(url, data, format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
