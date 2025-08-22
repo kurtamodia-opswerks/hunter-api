@@ -7,22 +7,25 @@ on:
     branches: ["main"]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build and start containers (CI override)
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Run migrations
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm web python manage.py migrate --noinput
+      - name: Run tests
+        run: docker compose -f docker-compose.ci.yml up --build
+        env:
+          DB_NAME: ${{ secrets.POSTGRES_DB }}
+          DB_USER: ${{ secrets.POSTGRES_USER }}
+          DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          REDIS_URL: redis://redis:6379/1
 
-      - name: Run Django tests
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml run --rm web python manage.py test
-
-      - name: Shut down
+      - name: Tear down
         if: always()
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
+        run: docker compose -f docker-compose.ci.yml down -v
