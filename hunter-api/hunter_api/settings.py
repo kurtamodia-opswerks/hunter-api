@@ -187,53 +187,53 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    # Format of logs
-    "formatters": {
-        "verbose": {
-            "format": "[{asctime}] {levelname} {name} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-    # Where logs go
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs", "django.log"),
-            "formatter": "verbose",
-        },
-        "error_file": {
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs", "errors.log"),
-            "formatter": "verbose",
-        },
-    },
-    # Which loggers to use
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "django.request": {
-            "handlers": ["error_file"],
-            "level": "ERROR",
-            "propagate": False,
-        },
-        "api": {  # Replace with your app name
-            "handlers": ["console", "file"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     # Format of logs
+#     "formatters": {
+#         "verbose": {
+#             "format": "[{asctime}] {levelname} {name} {message}",
+#             "style": "{",
+#         },
+#         "simple": {
+#             "format": "{levelname} {message}",
+#             "style": "{",
+#         },
+#     },
+#     # Where logs go
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#             "formatter": "verbose",
+#         },
+#         "file": {
+#             "class": "logging.FileHandler",
+#             "filename": os.path.join(BASE_DIR, "logs", "django.log"),
+#             "formatter": "verbose",
+#         },
+#         "error_file": {
+#             "class": "logging.FileHandler",
+#             "filename": os.path.join(BASE_DIR, "logs", "errors.log"),
+#             "formatter": "verbose",
+#         },
+#     },
+#     # Which loggers to use
+#     "loggers": {
+#         "django": {
+#             "handlers": ["console", "file"],
+#             "level": "INFO",
+#             "propagate": True,
+#         },
+#         "django.request": {
+#             "handlers": ["error_file"],
+#             "level": "ERROR",
+#             "propagate": False,
+#         },
+#         "api": {  # Replace with your app name
+#             "handlers": ["console", "file"],
+#             "level": "DEBUG",
+#             "propagate": False,
+#         },
+#     },
+# }
