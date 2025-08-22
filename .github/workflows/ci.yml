@@ -32,19 +32,8 @@ jobs:
       - name: Build and start containers
         run: docker compose -f docker-compose.ci.yml up -d --build
 
-      - name: Wait for Postgres to be ready
-        run: |
-          until docker compose -f docker-compose.ci.yml exec -T db pg_isready -U $DB_USER -d $DB_NAME; do
-            echo "Postgres is unavailable - sleeping"
-            sleep 1
-          done
-          echo "Postgres is ready!"
-
-      - name: Drop leftover test DB
-        run: docker compose -f docker-compose.ci.yml exec -T db psql -U $DB_USER -c "DROP DATABASE IF EXISTS test_$DB_NAME;"
-
       - name: Run Django tests
-        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py test --noinput --parallel=1
+        run: docker compose -f docker-compose.ci.yml exec -T web python manage.py test --noinput
 
       - name: Shut down containers
         if: always()
