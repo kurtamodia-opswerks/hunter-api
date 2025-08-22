@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
  
 # Copy project
 COPY hunter-api/ .
+
+# Create logs directory
+RUN mkdir -p /app/logs
  
 # Expose port
 EXPOSE 8000
