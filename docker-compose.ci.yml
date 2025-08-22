@@ -2,13 +2,30 @@ services:
   web:
     build: .
     environment:
+      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
+      DEBUG: "${DEBUG}"
+      POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      POSTGRES_DB: "${POSTGRES_DB}"
       DB_HOST: "${DB_HOST}"
       DB_PORT: "${DB_PORT}"
+      DB_ENGINE: "${DB_ENGINE}"
       REDIS_URL: "${REDIS_URL}"
     command: python manage.py test
     depends_on:
       - db
       - redis
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
