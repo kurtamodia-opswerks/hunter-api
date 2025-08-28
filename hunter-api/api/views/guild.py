@@ -47,7 +47,7 @@ class GuildViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         time.sleep(2)
-        qs = super().get_queryset()
+        qs = super().get_queryset().order_by("founded_date", "name")
         return qs
 
     def get_permissions(self):
