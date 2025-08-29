@@ -7,6 +7,7 @@ from api.views import (
     RaidViewSet,
     SkillViewSet,
 )
+from api.views.token import CustomTokenObtainPairView
 from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -14,7 +15,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 # Create a router and register viewsets
 router = DefaultRouter()
@@ -27,7 +28,7 @@ router.register("raid-participations", RaidParticipationViewSet)
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

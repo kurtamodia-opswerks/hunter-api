@@ -1,11 +1,11 @@
 @ACCESS_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1Njc3NTUwLCJpYXQiOjE3NTU2NzM5NTAsImp0aSI6ImY0YTBiZDc3ZTM5OTQwOTliNzZjOTc4MzRjMDQxNjQyIiwidXNlcl9pZCI6IjIifQ.26i2zcnhyrzsH9xG44UvU_LsUSKODGXGZFNHXJQjmJw
-@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1ODMwMDQyLCJpYXQiOjE3NTU4MjY0NDIsImp0aSI6IjBmNzU0ODI4ZGI3MTQ2MmI5OTcyMjNjOGVmODJmYjAzIiwidXNlcl9pZCI6IjIifQ.VlqiH8ixf-79Rqwa8JuRKMEjpujcbFWFJygUgWBkjf4
+@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2NDQwNzEyLCJpYXQiOjE3NTY0MzcxMTIsImp0aSI6IjI0NTgwODFkZDEyODQ5YzM4N2ZjMzk2YjliNjVlMTJlIiwidXNlcl9pZCI6IjIifQ.jd6h_r_Q8dYhr4odHfJyfLUZAlYOLIligABbHcwMz5w
 ### ===== AUTHENTICATION =====
 POST http://localhost:8000/api/token/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username": "admin",
+    "username": "kurtamodia",
     "password": "test"
 }
 
@@ -62,12 +62,12 @@ Content-Type: application/json
 Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-    "first_name": "Thomas", 
-    "last_name": "Andre", 
-    "username": "thomasandre", 
+    "first_name": "Lightning", 
+    "last_name": "McQueen", 
+    "username": "speedy", 
     "password": "test", 
-    "email": "thomasandre@gmail.com",
-    "rank": "S",
+    "email": "speedy@gmail.com",
+    "rank": "E",
     "skills": [],
     "guild": null
 }
