@@ -43,10 +43,6 @@ class HunterSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "password": {"write_only": True},
-            "rank": {"write_only": True},
-            "first_name": {"write_only": True},
-            "last_name": {"write_only": True},
-            "username": {"write_only": True},
         }
 
     def create(self, validated_data):
