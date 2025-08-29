@@ -13,7 +13,6 @@ class HunterFilter(django_filters.FilterSet):
         model = Hunter
         fields = {
             "rank": ["exact"],
-            "username": ["icontains"],
         }
 
 
