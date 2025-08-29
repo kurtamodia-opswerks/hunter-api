@@ -68,7 +68,10 @@ class HunterViewSet(viewsets.ModelViewSet):
         return qs
 
     def get_permissions(self):
-        self.permission_classes = [permissions.AllowAny]
-        if self.request.method in ("POST", "PUT", "DELETE"):
+        if self.request.method == "POST":
+            self.permission_classes = [permissions.AllowAny]
+        elif self.request.method == "GET":
+            self.permission_classes = [permissions.IsAuthenticated]
+        elif self.request.method in ("PUT", "PATCH", "DELETE"):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()

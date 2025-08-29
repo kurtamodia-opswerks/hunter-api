@@ -11,6 +11,7 @@ class HunterSerializer(serializers.ModelSerializer):
     guild = serializers.PrimaryKeyRelatedField(
         queryset=Guild.objects.all(), required=False, allow_null=True
     )
+    guild_name = serializers.CharField(source="guild.name", read_only=True)
 
     class Meta:
         model = Hunter
@@ -31,6 +32,7 @@ class HunterSerializer(serializers.ModelSerializer):
             "rank",
             "skills",
             "guild",
+            "guild_name",
             "raid_count",
         ]
         read_only_fields = [
