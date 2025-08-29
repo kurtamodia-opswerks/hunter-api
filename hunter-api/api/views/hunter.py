@@ -4,6 +4,8 @@ from api.filters import HunterFilter
 from api.models import Hunter
 from api.serializers import HunterSerializer
 from api.tasks import send_hunter_welcome_email
+from django.db.models import Case, F, IntegerField, Sum, Value, When
+from django.db.models.functions import Coalesce
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
@@ -42,7 +44,27 @@ class HunterViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         time.sleep(2)
-        qs = super().get_queryset().order_by("-rank", "id")
+        base_power = {
+            "E": 10,
+            "D": 30,
+            "C": 50,
+            "B": 80,
+            "A": 120,
+            "S": 200,
+        }
+        qs = (
+            super()
+            .get_queryset()
+            .annotate(
+                skill_power=Coalesce(Sum("skills__power"), Value(0)),
+                base_power=Case(
+                    *(When(rank=k, then=Value(v)) for k, v in base_power.items()),
+                    output_field=IntegerField(),
+                ),
+                total_power=F("base_power") + F("skill_power"),
+            )
+            .order_by("-total_power", "id")
+        )
         return qs
 
     def get_permissions(self):
