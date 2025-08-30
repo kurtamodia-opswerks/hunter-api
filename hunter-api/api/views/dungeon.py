@@ -1,11 +1,11 @@
 import time
 
-from api.filters import ActiveDungeonFilterBackend
 from api.models import Dungeon
 from api.serializers import DungeonSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, viewsets
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
@@ -17,7 +17,7 @@ class DungeonViewSet(viewsets.ModelViewSet):
     serializer_class = DungeonSerializer
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     filter_backends = [
-        ActiveDungeonFilterBackend,
+        DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
     ]

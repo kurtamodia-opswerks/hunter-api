@@ -30,8 +30,6 @@ class HunterSerializer(serializers.ModelSerializer):
             "password",
             "email",
             "rank",
-            "skills",
-            "guild",
             "guild_name",
             "raid_count",
         ]
@@ -44,7 +42,10 @@ class HunterSerializer(serializers.ModelSerializer):
             "raid_count",
         ]
         extra_kwargs = {
-            "password": {"write_only": True},
+            "password": {
+                "write_only": True,
+                "required": False,
+            },  # <-- not required by default
         }
 
     def create(self, validated_data):
@@ -52,8 +53,9 @@ class HunterSerializer(serializers.ModelSerializer):
         guild = validated_data.pop("guild", None)
 
         user = Hunter(**validated_data)
-
-        user.set_password(validated_data["password"])
+        user.set_password(
+            validated_data["password"]
+        )  # safe because password is required in validate()
         user.save()
 
         if skills:
@@ -64,7 +66,38 @@ class HunterSerializer(serializers.ModelSerializer):
 
         return user
 
+    def update(self, instance, validated_data):
+        skills = validated_data.pop("skills", None)
+        guild = validated_data.pop("guild", None)
+        password = validated_data.pop("password", None)
+
+        # Normal fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        # Password: only update if non-empty string
+        if password is not None and password.strip():
+            instance.set_password(password)
+
+        instance.save()
+
+        # Skills: explicit [] clears them, None means "not provided"
+        if skills is not None:
+            instance.skills.set(skills)
+
+        # Guild: explicit null clears it, None means "not provided"
+        if "guild" in self.initial_data:  # ensures user explicitly sent guild
+            instance.guild = guild  # can be real Guild or None
+            instance.save()
+
+        return instance
+
     def validate(self, data):
+        # Normalize password empty string → drop it
+        if "password" in data and data["password"] == "":
+            data.pop("password")
+
+        # Validation only when creating
         if self.instance is None:
             if not data.get("first_name", "").strip():
                 raise serializers.ValidationError(
@@ -74,6 +107,12 @@ class HunterSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"last_name": "Last name is required."}
                 )
-            if data.get("rank") not in [r[0] for r in Hunter.RankChoices.choices]:
-                raise serializers.ValidationError({"rank": "Valid rank is required."})
+            if not data.get("password", "").strip():
+                raise serializers.ValidationError(
+                    {"password": "Password is required on create."}
+                )
+            if not data.get("username", "").strip():
+                raise serializers.ValidationError(
+                    {"username": "Username is required on create."}
+                )
         return data

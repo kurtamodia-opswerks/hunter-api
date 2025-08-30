@@ -3,9 +3,14 @@ from api.models import Dungeon, Guild, Hunter, Raid, RaidParticipation, Skill
 from rest_framework import filters
 
 
-class ActiveDungeonFilterBackend(filters.BaseFilterBackend):
-    def filter_queryset(self, request, queryset, view):
-        return queryset.filter(is_open=True)
+class DungeonFilter(django_filters.FilterSet):
+    class Meta:
+        model = Dungeon
+        fields = {
+            "name": ["icontains"],
+            "location": ["icontains"],
+            "rank": ["exact", "gte", "lte"],
+        }
 
 
 class HunterFilter(django_filters.FilterSet):
