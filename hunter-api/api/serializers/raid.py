@@ -47,7 +47,7 @@ class RaidSerializer(serializers.ModelSerializer):
         serializer = RaidParticipationSerializer(
             obj.participations.all(),
             many=True,
-            fields=["full_name", "hunter_rank", "role"],
+            fields=["id", "full_name", "hunter_rank", "role"],
         )
         return serializer.data
 

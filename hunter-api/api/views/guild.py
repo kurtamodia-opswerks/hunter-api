@@ -51,7 +51,7 @@ class GuildViewSet(viewsets.ModelViewSet):
         return qs
 
     def get_permissions(self):
-        self.permission_classes = [permissions.AllowAny]
+        self.permission_classes = [permissions.IsAuthenticated]
         if self.request.method in ("POST", "PUT", "DELETE"):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()
