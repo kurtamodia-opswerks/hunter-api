@@ -6,6 +6,7 @@ from api.views import (
     RaidParticipationViewSet,
     RaidViewSet,
     SkillViewSet,
+    VerifyPasswordView,
 )
 from api.views.token import CustomTokenObtainPairView
 from django.urls import include, path
@@ -40,4 +41,5 @@ urlpatterns = [
         "schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
     ),
     path("api/guild-invite/", GuildInviteView.as_view(), name="guild-invite"),
+    path("api/verify-password/", VerifyPasswordView.as_view(), name="verify-password"),
 ]
