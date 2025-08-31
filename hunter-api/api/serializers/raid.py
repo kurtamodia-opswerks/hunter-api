@@ -18,9 +18,9 @@ class RaidSerializer(serializers.ModelSerializer):
     #     source='participations'
     # )
     participations_info = serializers.SerializerMethodField()
-    participations_create = RaidParticipationNestedSerializer(
-        many=True, write_only=True
-    )
+    # participations_create = RaidParticipationNestedSerializer(
+    #     many=True, write_only=True
+    # )
 
     class Meta:
         model = Raid
@@ -33,7 +33,7 @@ class RaidSerializer(serializers.ModelSerializer):
             "success",
             "team_strength",
             "participations_info",
-            "participations_create",
+            # "participations_create",
         ]
         read_only_fields = [
             "id",
