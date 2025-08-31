@@ -24,4 +24,4 @@ class DungeonSerializer(serializers.ModelSerializer):
 class DungeonBriefSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dungeon
-        fields = ["id", "name", "rank"]
+        fields = ["id", "name", "rank", "rank_display"]

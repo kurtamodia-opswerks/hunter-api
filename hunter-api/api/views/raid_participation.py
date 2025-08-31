@@ -35,7 +35,7 @@ class RaidParticipationViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         self.permission_classes = [permissions.IsAuthenticated]
-        if self.request.method in ("POST", "PUT", "DELETE"):
+        if self.request.method in ("PUT"):
             self.permission_classes = [permissions.IsAdminUser]
         return super().get_permissions()
 

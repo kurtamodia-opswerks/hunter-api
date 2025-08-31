@@ -14,6 +14,10 @@ class DungeonFilter(django_filters.FilterSet):
 
 
 class HunterFilter(django_filters.FilterSet):
+    guild_isnull = django_filters.BooleanFilter(
+        field_name="guild", lookup_expr="isnull"
+    )
+
     class Meta:
         model = Hunter
         fields = {

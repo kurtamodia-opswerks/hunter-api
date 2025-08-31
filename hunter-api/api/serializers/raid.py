@@ -12,15 +12,7 @@ class RaidSerializer(serializers.ModelSerializer):
         queryset=Dungeon.objects.filter(is_open=True)
     )
     dungeon_info = DungeonBriefSerializer(source="dungeon", read_only=True)
-    # participations_info = RaidParticipationSerializer(
-    #     many=True,
-    #     read_only=True,
-    #     source='participations'
-    # )
     participations_info = serializers.SerializerMethodField()
-    # participations_create = RaidParticipationNestedSerializer(
-    #     many=True, write_only=True
-    # )
 
     class Meta:
         model = Raid
@@ -47,7 +39,7 @@ class RaidSerializer(serializers.ModelSerializer):
         serializer = RaidParticipationSerializer(
             obj.participations.all(),
             many=True,
-            fields=["id", "full_name", "hunter_rank", "role"],
+            fields=["id", "hunter_id", "full_name", "hunter_rank", "role"],
         )
         return serializer.data
 
