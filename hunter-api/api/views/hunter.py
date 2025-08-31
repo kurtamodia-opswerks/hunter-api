@@ -31,7 +31,7 @@ class HunterViewSet(viewsets.ModelViewSet):
     ]
     filterset_class = HunterFilter
     search_fields = ["username", "first_name", "last_name"]
-    ordering_fields = ["date_joined", "rank"]
+    ordering_fields = ["date_joined", "rank", "username", "first_name", "last_name"]
 
     @method_decorator(cache_page(60 * 15, key_prefix="hunter_list"))
     @method_decorator(vary_on_headers("Authorization"))
