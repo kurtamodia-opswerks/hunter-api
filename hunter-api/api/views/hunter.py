@@ -4,7 +4,7 @@ from api.filters import HunterFilter
 from api.models import Hunter
 from api.serializers import HunterSerializer
 from api.tasks import send_hunter_welcome_email
-from django.db.models import Case, F, IntegerField, Sum, Value, When
+from django.db.models import Case, Count, F, IntegerField, Sum, Value, When
 from django.db.models.functions import Coalesce
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -31,7 +31,15 @@ class HunterViewSet(viewsets.ModelViewSet):
     ]
     filterset_class = HunterFilter
     search_fields = ["username", "first_name", "last_name"]
-    ordering_fields = ["date_joined", "rank", "username", "first_name", "last_name"]
+    ordering_fields = [
+        "date_joined",
+        "rank",
+        "username",
+        "first_name",
+        "last_name",
+        "power_level_annotated",
+        "raid_count_annotated",
+    ]
 
     @method_decorator(cache_page(60 * 15, key_prefix="hunter_list"))
     @method_decorator(vary_on_headers("Authorization"))
@@ -56,14 +64,15 @@ class HunterViewSet(viewsets.ModelViewSet):
             super()
             .get_queryset()
             .annotate(
+                raid_count_annotated=Count("completed_raids", distinct=True),
                 skill_power=Coalesce(Sum("skills__power"), Value(0)),
                 base_power=Case(
                     *(When(rank=k, then=Value(v)) for k, v in base_power.items()),
                     output_field=IntegerField(),
                 ),
-                total_power=F("base_power") + F("skill_power"),
+                power_level_annotated=F("base_power") + F("skill_power"),
             )
-            .order_by("-total_power", "id")
+            .order_by("-power_level_annotated", "id")
         )
         return qs
 
